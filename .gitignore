@@ -1,0 +1,41 @@
+.env
+secret.iss
+node_modules/
+frontend/node_modules/
+backend/node_modules/
+backend/uploads/
+backend/workflows/
+dist/
+*.log
+__pycache__/
+*.pyc
+.DS_Store
+
+# resize-upload node — chứa secret (Asana PAT, GCS credentials path) và catalog nội bộ
+nodes/resize-upload/settings.json
+nodes/resize-upload/custom_links.json
+
+# module-tool-python resize/upload tool — chứa secret (Asana PAT, GCS service account key)
+module-tool-python/resize_uploadCloud-NMS-youtube/config.json
+module-tool-python/resize_uploadCloud-NMS-youtube/config222.json
+module-tool-python/resize_uploadCloud-NMS-youtube/custom_links.json
+
+# === Harness ===
+# Harness durable layer — each project instance generates its own data.
+harness.db
+harness.db-wal
+harness.db-shm
+
+# Rust build output for harness tooling.
+target/
+dist/
+
+# Downloaded Harness CLI binary for installed project instances.
+scripts/bin/harness-cli
+scripts/bin/harness-cli.exe
+
+# CodeGraph runtime state — changes constantly, causes pull conflicts.
+.codegraph/
+
+# Compiled installer output (build artifact, not source)
+dist-installer/

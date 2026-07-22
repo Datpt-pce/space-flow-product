@@ -1,0 +1,30 @@
+{
+  "id": "list",
+  "name": "List",
+  "version": "1.0.0",
+  "category": "data",
+  "description": "Group multiple files of the same type for batch processing.",
+  "icon": "list",
+  "inputs": [
+    { "id": "items", "label": "Items", "type": "array" }
+  ],
+  "outputs": [
+    { "id": "files", "label": "Files", "type": "array" }
+  ],
+  "config": [
+    {
+      "id": "file_type",
+      "label": "File Type",
+      "type": "select",
+      "options": ["image", "video", "audio", "any"],
+      "default": "image"
+    },
+    {
+      "id": "files",
+      "label": "Files",
+      "type": "file-list",
+      "default": []
+    }
+  ],
+  "executor": { "type": "js", "script": "execute.js" }
+}

@@ -1,0 +1,16 @@
+{
+  "name": "space-flow",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "start": "powershell -NoProfile -ExecutionPolicy Bypass -File start.ps1",
+    "dev": "concurrently \"npm run dev:backend\" \"npm run dev:frontend\"",
+    "dev:backend": "cd backend && node server.js",
+    "dev:frontend": "cd frontend && npx vite",
+    "setup": "node scripts/check-env.js && npm install --prefix frontend && npm install --prefix backend",
+    "setup:python": "pip install rembg Pillow requests certifi google-cloud-storage yt-dlp"
+  },
+  "devDependencies": {
+    "concurrently": "^9.1.2"
+  }
+}

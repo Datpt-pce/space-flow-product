@@ -1,0 +1,87 @@
+name: space-flow
+
+services:
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile.backend
+    ports:
+      - "4001:4001"
+    volumes:
+      - ./backend/uploads:/app/backend/uploads
+      - ./backend/workflows:/app/backend/workflows
+      - "${LOCALAPPDATA}/CapCut/User Data/Projects/com.lveditor.draft:/host-capcut/draft"
+      - "${LOCALAPPDATA}/CapCut/User Data/Cache/effect:/host-capcut/effect"
+      - "${USERPROFILE}:/host-fs/home"
+      - "${EXTRA_HOST_DIR_1:-.}:/host-fs/extra1"
+      - "${EXTRA_HOST_DIR_2:-.}:/host-fs/extra2"
+      - "${EXTRA_HOST_DIR_3:-.}:/host-fs/extra3"
+      - "${HOST_DRIVE_D:-.}:/host-fs/drive-d"
+      - "${HOST_DRIVE_E:-.}:/host-fs/drive-e"
+      - "${HOST_DRIVE_F:-.}:/host-fs/drive-f"
+      - "${HOST_DRIVE_G:-.}:/host-fs/drive-g"
+      - "${HOST_DRIVE_H:-.}:/host-fs/drive-h"
+      - "${HOST_DRIVE_I:-.}:/host-fs/drive-i"
+      - "${HOST_DRIVE_J:-.}:/host-fs/drive-j"
+      - "${HOST_DRIVE_K:-.}:/host-fs/drive-k"
+      - "${HOST_DRIVE_L:-.}:/host-fs/drive-l"
+      - "${HOST_DRIVE_M:-.}:/host-fs/drive-m"
+      - "${HOST_DRIVE_N:-.}:/host-fs/drive-n"
+      - "${HOST_DRIVE_O:-.}:/host-fs/drive-o"
+      - "${HOST_DRIVE_P:-.}:/host-fs/drive-p"
+      - "${HOST_DRIVE_Q:-.}:/host-fs/drive-q"
+      - "${HOST_DRIVE_R:-.}:/host-fs/drive-r"
+      - "${HOST_DRIVE_S:-.}:/host-fs/drive-s"
+      - "${HOST_DRIVE_T:-.}:/host-fs/drive-t"
+      - "${HOST_DRIVE_U:-.}:/host-fs/drive-u"
+      - "${HOST_DRIVE_V:-.}:/host-fs/drive-v"
+      - "${HOST_DRIVE_W:-.}:/host-fs/drive-w"
+      - "${HOST_DRIVE_X:-.}:/host-fs/drive-x"
+      - "${HOST_DRIVE_Y:-.}:/host-fs/drive-y"
+      - "${HOST_DRIVE_Z:-.}:/host-fs/drive-z"
+    environment:
+      - PORT=4001
+      - CAPCUT_DRAFTS_DIR=/host-capcut/draft
+      - CAPCUT_EFFECTS_DIR=/host-capcut/effect
+      - HOST_FS_HOME=/host-fs/home
+      - HOST_USERPROFILE=${USERPROFILE}
+      - HOST_DRIVE_D=${HOST_DRIVE_D:-}
+      - HOST_DRIVE_E=${HOST_DRIVE_E:-}
+      - HOST_DRIVE_F=${HOST_DRIVE_F:-}
+      - HOST_DRIVE_G=${HOST_DRIVE_G:-}
+      - HOST_DRIVE_H=${HOST_DRIVE_H:-}
+      - HOST_DRIVE_I=${HOST_DRIVE_I:-}
+      - HOST_DRIVE_J=${HOST_DRIVE_J:-}
+      - HOST_DRIVE_K=${HOST_DRIVE_K:-}
+      - HOST_DRIVE_L=${HOST_DRIVE_L:-}
+      - HOST_DRIVE_M=${HOST_DRIVE_M:-}
+      - HOST_DRIVE_N=${HOST_DRIVE_N:-}
+      - HOST_DRIVE_O=${HOST_DRIVE_O:-}
+      - HOST_DRIVE_P=${HOST_DRIVE_P:-}
+      - HOST_DRIVE_Q=${HOST_DRIVE_Q:-}
+      - HOST_DRIVE_R=${HOST_DRIVE_R:-}
+      - HOST_DRIVE_S=${HOST_DRIVE_S:-}
+      - HOST_DRIVE_T=${HOST_DRIVE_T:-}
+      - HOST_DRIVE_U=${HOST_DRIVE_U:-}
+      - HOST_DRIVE_V=${HOST_DRIVE_V:-}
+      - HOST_DRIVE_W=${HOST_DRIVE_W:-}
+      - HOST_DRIVE_X=${HOST_DRIVE_X:-}
+      - HOST_DRIVE_Y=${HOST_DRIVE_Y:-}
+      - HOST_DRIVE_Z=${HOST_DRIVE_Z:-}
+    env_file:
+      - .env
+    restart: unless-stopped
+
+  frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile.frontend
+    ports:
+      - "2612:2612"
+    environment:
+      - BACKEND_HOST=backend
+      - BACKEND_PORT=4001
+      - FRONTEND_PORT=2612
+    depends_on:
+      - backend
+    restart: unless-stopped

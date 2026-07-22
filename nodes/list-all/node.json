@@ -1,0 +1,22 @@
+{
+  "id": "list-all",
+  "name": "List All",
+  "version": "1.0.0",
+  "category": "data",
+  "description": "Universal list — holds files, text items, or table data. Switch modes with the toggle.",
+  "icon": "list-plus",
+  "inputs": [
+    { "id": "items", "label": "Items", "type": "array" }
+  ],
+  "outputs": [
+    { "id": "items", "label": "Items", "type": "array" }
+  ],
+  "config": [
+    { "id": "mode",    "label": "Mode",    "type": "select", "options": ["text", "table", "files"], "default": "text" },
+    { "id": "files",   "label": "Files",   "type": "file-list", "default": [] },
+    { "id": "items",   "label": "Items",   "type": "json",      "default": [] },
+    { "id": "headers", "label": "Headers", "type": "json",      "default": [] },
+    { "id": "rows",    "label": "Rows",    "type": "json",      "default": [] }
+  ],
+  "executor": { "type": "js", "script": "execute.js" }
+}

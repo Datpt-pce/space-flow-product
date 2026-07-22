@@ -1,0 +1,27 @@
+# Backend + execution engine (Node.js + Python cho cac node AI/xu ly anh).
+# Dong goi san Node + Python + pip deps + ffmpeg de teammate khong can tu cai gi tren may that.
+FROM node:20-bookworm
+
+RUN apt-get update && apt-get install -y --no-install-recommends \
+      python3 python3-pip ffmpeg \
+    && ln -s /usr/bin/python3 /usr/bin/python \
+    && rm -rf /var/lib/apt/lists/*
+
+# spawnPython (backend/engine/runner.js) goi lenh "python" — da tao symlink o tren.
+#
+# Chi cai nhung gi cac node hien tai thuc su dung (Pillow, requests, certifi) + rembg
+# (xoa nen, dung ONNXRuntime chu khong can PyTorch). Khong cai torch/basicsr/realesrgan
+# vi chua node nao dung va rat nang (hang GB, hay xung dot version) — them lai khi thuc
+# su can node upscale.
+RUN pip3 install --break-system-packages --no-cache-dir "rembg[cpu]" Pillow requests certifi google-cloud-storage yt-dlp
+
+WORKDIR /app
+COPY backend/package*.json backend/
+RUN npm install --prefix backend
+
+COPY backend/ backend/
+COPY nodes/ nodes/
+
+WORKDIR /app/backend
+EXPOSE 4001
+CMD ["node", "server.js"]

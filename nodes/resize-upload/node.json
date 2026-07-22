@@ -1,0 +1,39 @@
+{
+  "id": "resize-upload",
+  "name": "Resize & Upload (UNC + GCS + Asana)",
+  "version": "1.0.0",
+  "category": "output",
+  "description": "Resize video hàng loạt (FFmpeg) rồi phân phối: copy UNC nội bộ, upload GCS (Meta/Google), cập nhật Asana",
+  "icon": "clapperboard",
+  "inputs": [
+    { "id": "folders_in", "label": "Folders", "type": "array", "required": false }
+  ],
+  "outputs": [
+    { "id": "unc_links", "label": "UNC Links", "type": "array" },
+    { "id": "gcs_links", "label": "GCS Links", "type": "array" },
+    { "id": "files_out", "label": "Files", "type": "array" }
+  ],
+  "config": [
+    { "id": "cred_config_path", "label": "Đường dẫn GCS credentials JSON", "type": "text", "default": "" },
+    { "id": "cred_links_path", "label": "Đường dẫn danh mục App JSON", "type": "text", "default": "" },
+    { "id": "input_folders", "label": "Input Folders", "type": "json", "default": [] },
+    { "id": "output_folder", "label": "Output Folder", "type": "text", "default": "" },
+    { "id": "mode", "label": "Gói kích thước", "type": "select", "options": ["8_sizes", "3_sizes", "4_sizes_meta"], "default": "8_sizes" },
+    { "id": "bg_style", "label": "Kiểu nền", "type": "select", "options": ["color", "blur", "scale_fill", "none"], "default": "color" },
+    { "id": "color_color", "label": "Màu nền", "type": "text", "default": "#FEFBE7" },
+    { "id": "blur_value", "label": "Độ mờ", "type": "number", "default": 30 },
+    { "id": "rename_videos", "label": "Đổi tên video", "type": "boolean", "default": true },
+    { "id": "export_thumbnail", "label": "Xuất thumbnail", "type": "boolean", "default": true },
+    { "id": "use_unc", "label": "Dùng UNC", "type": "boolean", "default": true },
+    { "id": "use_gcs", "label": "Dùng GCS", "type": "boolean", "default": false },
+    { "id": "use_meta", "label": "GCS Meta", "type": "boolean", "default": true },
+    { "id": "use_google", "label": "GCS Google", "type": "boolean", "default": false },
+    { "id": "gcs_google_parent_folder", "label": "Kênh Google (parent)", "type": "text", "default": "Application Tools T1" },
+    { "id": "selected_apps", "label": "App đã chọn", "type": "json", "default": [] },
+    { "id": "use_asana", "label": "Dùng Asana", "type": "boolean", "default": true },
+    { "id": "task_urls", "label": "Task URLs", "type": "textarea", "default": "" },
+    { "id": "asana_field_gid", "label": "Progress Field GID", "type": "text", "default": "" },
+    { "id": "asana_option_gid", "label": "Done Option GID", "type": "text", "default": "" }
+  ],
+  "executor": { "type": "python", "script": "executor.py" }
+}

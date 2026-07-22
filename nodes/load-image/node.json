@@ -1,0 +1,19 @@
+{
+  "id": "load-image",
+  "name": "Load Image",
+  "version": "1.0.0",
+  "category": "input",
+  "description": "Load an image from local disk into the workflow",
+  "color": "#0ea5e9",
+  "icon": "image",
+  "inputs": [],
+  "outputs": [
+    { "id": "image_out", "label": "Image", "type": "image" },
+    { "id": "width",     "label": "Width",  "type": "number" },
+    { "id": "height",    "label": "Height", "type": "number" }
+  ],
+  "config": [
+    { "id": "file_path", "label": "File Path", "type": "file", "required": true, "default": "" }
+  ],
+  "executor": { "type": "js", "script": "execute.js" }
+}

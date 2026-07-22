@@ -1,0 +1,20 @@
+{
+  "id": "video-downloader",
+  "name": "Video Downloader",
+  "version": "1.0.0",
+  "category": "input",
+  "description": "Download videos/ảnh từ URLs (YouTube, TikTok, Douyin, Pinterest, Google Drive...) dùng yt-dlp",
+  "icon": "download",
+  "inputs": [
+    { "id": "urls_in", "label": "URLs", "type": "array", "required": false }
+  ],
+  "outputs": [
+    { "id": "files_out", "label": "Videos", "type": "array" }
+  ],
+  "config": [
+    { "id": "urls_manual", "label": "URLs thủ công (mỗi dòng 1 URL)", "type": "textarea", "default": "" },
+    { "id": "output_format", "label": "Format", "type": "select", "options": ["best", "mp4", "mp3"], "default": "best" },
+    { "id": "output_dir", "label": "Thư mục lưu", "type": "text", "default": "" }
+  ],
+  "executor": "execute.js"
+}

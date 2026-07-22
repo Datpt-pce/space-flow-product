@@ -1,0 +1,13 @@
+# Frontend dev server (Vite). Chay o che do dev (khong build static) de giu nguyen
+# hanh vi proxy /api, /uploads sang backend nhu khi chay native.
+FROM node:20-bookworm
+
+WORKDIR /app
+COPY frontend/package*.json frontend/
+RUN npm install --prefix frontend
+
+COPY frontend/ frontend/
+
+WORKDIR /app/frontend
+EXPOSE 2612
+CMD ["npx", "vite"]

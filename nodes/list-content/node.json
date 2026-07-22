@@ -1,0 +1,21 @@
+{
+  "id": "list-content",
+  "name": "List Content",
+  "version": "1.0.0",
+  "category": "data",
+  "description": "Chứa nội dung text. Tự động nhận diện định dạng bảng khi paste từ trang tính.",
+  "icon": "table-2",
+  "inputs": [
+    { "id": "items", "label": "Items", "type": "array" }
+  ],
+  "outputs": [
+    { "id": "rows", "label": "Rows", "type": "array" }
+  ],
+  "config": [
+    { "id": "mode",    "label": "Mode",    "type": "select", "options": ["text", "table"], "default": "text" },
+    { "id": "items",   "label": "Items",   "type": "json",   "default": [] },
+    { "id": "headers", "label": "Headers", "type": "json",   "default": [] },
+    { "id": "rows",    "label": "Rows",    "type": "json",   "default": [] }
+  ],
+  "executor": { "type": "js", "script": "execute.js" }
+}
