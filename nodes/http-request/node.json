@@ -1,0 +1,25 @@
+{
+  "id": "http-request",
+  "name": "HTTP Request",
+  "version": "1.0.0",
+  "category": "data",
+  "description": "Gọi 1 REST endpoint bất kỳ (method/url/headers/body/auth khai báo qua config, không cần viết code riêng cho từng API).",
+  "icon": "globe",
+  "inputs": [
+    { "id": "url_in", "label": "URL In", "type": "text", "required": false }
+  ],
+  "outputs": [
+    { "id": "items", "label": "Items", "type": "items" },
+    { "id": "status_code", "label": "Status Code", "type": "number" },
+    { "id": "raw_text", "label": "Raw Text", "type": "text" }
+  ],
+  "config": [
+    { "id": "url", "label": "URL", "type": "text", "default": "" },
+    { "id": "method", "label": "Method", "type": "select", "options": ["GET", "POST", "PUT", "PATCH", "DELETE"], "default": "GET" },
+    { "id": "headers", "label": "Headers (JSON)", "type": "json", "default": {} },
+    { "id": "query", "label": "Query (JSON)", "type": "json", "default": {} },
+    { "id": "body", "label": "Body (JSON)", "type": "json", "default": {} },
+    { "id": "credentialName", "label": "Credential Name", "type": "text", "default": "" }
+  ],
+  "executor": "execute.js"
+}

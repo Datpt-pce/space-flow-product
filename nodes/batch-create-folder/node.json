@@ -1,0 +1,44 @@
+{
+  "id": "batch-create-folder",
+  "name": "Batch Create Folder",
+  "version": "1.0.0",
+  "category": "output",
+  "description": "Sinh tên thư mục từ danh sách SubID + variants, tạo cấu trúc thư mục theo template.",
+  "icon": "folder-plus",
+  "inputs": [
+    { "id": "items_in", "label": "Items", "type": "array", "required": false }
+  ],
+  "outputs": [
+    { "id": "names", "label": "Names", "type": "array" }
+  ],
+  "config": [
+    {
+      "id": "items_text",
+      "label": "SubID List (mỗi dòng 1 item, Tab để thêm variants)",
+      "type": "textarea",
+      "default": "",
+      "placeholder": "01_ProjectAlpha\n02_ProjectBeta\tv1\tv2"
+    },
+    {
+      "id": "create_folders",
+      "label": "Tạo thư mục",
+      "type": "boolean",
+      "default": false
+    },
+    {
+      "id": "base_path",
+      "label": "Thư mục gốc",
+      "type": "text",
+      "default": "",
+      "placeholder": "D:/Projects"
+    },
+    {
+      "id": "template",
+      "label": "Template cấu trúc",
+      "type": "text",
+      "default": "",
+      "placeholder": "FL|SRC|RD/#1,#2,#3"
+    }
+  ],
+  "executor": "execute.js"
+}

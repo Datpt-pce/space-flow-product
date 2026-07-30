@@ -1,0 +1,16 @@
+{
+  "id": "schedule-trigger",
+  "name": "Schedule Trigger",
+  "version": "1.0.0",
+  "category": "trigger",
+  "description": "Tự động chạy lại toàn bộ workflow theo chu kỳ (giây), thay vì phải bấm Run thủ công. Bấm Activate để đăng ký lịch với backend.",
+  "icon": "clock",
+  "inputs": [],
+  "outputs": [
+    { "id": "trigger", "label": "Trigger", "type": "text" }
+  ],
+  "config": [
+    { "id": "intervalSeconds", "label": "Interval (seconds)", "type": "number", "default": 60, "min": 5, "step": 1 }
+  ],
+  "executor": "execute.js"
+}

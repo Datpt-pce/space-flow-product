@@ -1,0 +1,29 @@
+{
+  "id": "resize-upload-v2",
+  "name": "Resize & Upload Ver2 (Bảng)",
+  "version": "1.0.0",
+  "category": "output",
+  "description": "Resize & Upload dạng bảng — mỗi dòng là 1 job độc lập (App, Input, Asana, Resize riêng), phân phối UNC/GCS/Asana",
+  "icon": "clapperboard",
+  "inputs": [
+    { "id": "folders_in", "label": "Folders", "type": "array", "required": false }
+  ],
+  "outputs": [
+    { "id": "unc_links", "label": "UNC Links", "type": "array" },
+    { "id": "gcs_links", "label": "GCS Links", "type": "array" },
+    { "id": "files_out", "label": "Files", "type": "array" }
+  ],
+  "config": [
+    { "id": "rows", "label": "Danh sách Job", "type": "json", "default": [] },
+    { "id": "cred_config_path", "label": "Đường dẫn GCS credentials JSON", "type": "text", "default": "" },
+    { "id": "cred_links_path", "label": "Đường dẫn danh mục App JSON", "type": "text", "default": "" },
+    { "id": "output_folder", "label": "Output Folder", "type": "text", "default": "" },
+    { "id": "bg_style", "label": "Kiểu nền", "type": "select", "options": ["color", "blur", "scale_fill", "none"], "default": "color" },
+    { "id": "color_color", "label": "Màu nền", "type": "text", "default": "#FEFBE7" },
+    { "id": "blur_value", "label": "Độ mờ", "type": "number", "default": 30 },
+    { "id": "use_asana", "label": "Dùng Asana", "type": "boolean", "default": true },
+    { "id": "asana_field_gid", "label": "Progress Field GID", "type": "text", "default": "" },
+    { "id": "asana_option_gid", "label": "Done Option GID", "type": "text", "default": "" }
+  ],
+  "executor": { "type": "python", "script": "executor.py" }
+}
