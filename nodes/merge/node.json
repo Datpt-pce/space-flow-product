@@ -1,0 +1,33 @@
+{
+  "id": "merge",
+  "name": "Merge",
+  "version": "1.0.0",
+  "category": "control",
+  "description": "Gộp dữ liệu từ nhiều nhánh input: append, chọn 1 nhánh (chooseBranch), hoặc combine 2 nhánh theo field/vị trí (combineByFields/combineByPosition). Số lượng input hiện trên canvas theo numberInputs (xem quy ước dynamicInputs trong docs/product/node-spec/README.md). Không có mode combineBySql như n8n (cần dependency SQL-in-memory mới — ngoài phạm vi đợt này).",
+  "icon": "git-merge",
+  "inputs": [
+    { "id": "input1", "label": "Input 1", "type": "array" },
+    { "id": "input2", "label": "Input 2", "type": "array" },
+    { "id": "input3", "label": "Input 3", "type": "array" },
+    { "id": "input4", "label": "Input 4", "type": "array" },
+    { "id": "input5", "label": "Input 5", "type": "array" },
+    { "id": "input6", "label": "Input 6", "type": "array" },
+    { "id": "input7", "label": "Input 7", "type": "array" },
+    { "id": "input8", "label": "Input 8", "type": "array" },
+    { "id": "input9", "label": "Input 9", "type": "array" },
+    { "id": "input10", "label": "Input 10", "type": "array" }
+  ],
+  "outputs": [
+    { "id": "output", "label": "Output", "type": "array" }
+  ],
+  "dynamicInputs": { "countField": "numberInputs", "min": 2, "max": 10 },
+  "config": [
+    { "id": "mode", "label": "Mode", "type": "select", "options": ["append", "combineByFields", "combineByPosition", "chooseBranch"], "default": "append" },
+    { "id": "numberInputs", "label": "Number Of Inputs", "type": "number", "default": 2, "min": 2, "max": 10, "step": 1 },
+    { "id": "matchFields", "label": "Fields To Match (JSON: [{field1,field2}], combineByFields)", "type": "json", "default": [] },
+    { "id": "joinMode", "label": "Join Mode (combine modes)", "type": "select", "options": ["inner", "left", "outer"], "default": "inner" },
+    { "id": "clashResolve", "label": "On Clash (combine modes)", "type": "select", "options": ["preferFirst", "preferLast"], "default": "preferLast" },
+    { "id": "chooseBranchIndex", "label": "Branch Index (chooseBranch, 0-based)", "type": "number", "default": 0, "min": 0 }
+  ],
+  "executor": "execute.js"
+}

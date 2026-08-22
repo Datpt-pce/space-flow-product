@@ -1,0 +1,16 @@
+{
+  "id": "chat-trigger",
+  "name": "Chat",
+  "version": "1.0.0",
+  "category": "trigger",
+  "description": "Ô chat trên canvas (giống Chat Trigger của n8n) — gõ tin nhắn rồi Send để chạy workflow từ node này, không lưu lịch sử hội thoại.",
+  "icon": "message-circle",
+  "inputs": [],
+  "outputs": [
+    { "id": "message", "label": "Message", "type": "text" }
+  ],
+  "config": [
+    { "id": "message", "label": "Message", "type": "textarea", "default": "", "placeholder": "Nhập kịch bản / tin nhắn..." }
+  ],
+  "executor": "execute.js"
+}

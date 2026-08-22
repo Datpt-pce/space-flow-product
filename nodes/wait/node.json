@@ -1,0 +1,19 @@
+{
+  "id": "wait",
+  "name": "Wait",
+  "version": "1.0.0",
+  "category": "control",
+  "description": "Tạm dừng workflow 1 khoảng thời gian rồi đi tiếp với dữ liệu input y nguyên. Chỉ hỗ trợ mode timeInterval (sleep trong process) — không có mode webhook/form/specificTime dài hạn như n8n (cần suspend/resume bền vững, ngoài phạm vi engine hiện tại).",
+  "icon": "hourglass",
+  "inputs": [
+    { "id": "items", "label": "Items", "type": "array" }
+  ],
+  "outputs": [
+    { "id": "items", "label": "Items", "type": "array" }
+  ],
+  "config": [
+    { "id": "amount", "label": "Amount", "type": "number", "default": 1, "min": 0, "step": 1 },
+    { "id": "unit", "label": "Unit", "type": "select", "options": ["seconds", "minutes", "hours"], "default": "seconds" }
+  ],
+  "executor": "execute.js"
+}

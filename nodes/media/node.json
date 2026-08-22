@@ -1,0 +1,17 @@
+{
+  "id": "media",
+  "name": "Media",
+  "version": "1.0.0",
+  "category": "input",
+  "description": "A single image or video file with preview.",
+  "icon": "image",
+  "inputs": [],
+  "outputs": [
+    { "id": "file", "label": "File", "type": "file" }
+  ],
+  "config": [
+    { "id": "file_path", "label": "File Path", "type": "file", "default": "" },
+    { "id": "file_type", "label": "File Type", "type": "text", "default": "image" }
+  ],
+  "executor": "execute.js"
+}

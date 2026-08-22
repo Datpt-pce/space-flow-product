@@ -1,0 +1,22 @@
+{
+  "input_folders": [],
+  "output_folder": "X:\\My Drive\\Jobs\\01. Fulltime Jobs\\iKame\\#resize",
+  "mode": "8_sizes",
+  "bg_style": "blur",
+  "color_color": "#FEFBE7",
+  "blur_value": 30,
+  "rename_videos": true,
+  "export_thumbnail": true,
+  "use_unc": true,
+  "use_gcs": true,
+  "use_meta": true,
+  "use_google": true,
+  "gcs_google_parent_folder": "Application Tools T1",
+  "selected_apps": [],
+  "use_asana": true,
+  "task_urls": "",
+  "asana_field_gid": "1204160062082106",
+  "asana_option_gid": "1204167249102498",
+  "cred_config_path": "D:\\github\\space-flow\\module-tool-python\\resize_uploadCloud-NMS-youtube\\config222.json",
+  "cred_links_path": "D:\\github\\space-flow\\module-tool-python\\resize_uploadCloud-NMS-youtube\\custom_links.json"
+}

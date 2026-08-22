@@ -1,0 +1,23 @@
+{
+  "id": "xml",
+  "name": "XML",
+  "version": "1.0.0",
+  "category": "data",
+  "description": "Chuyển đổi JSON↔XML (dùng xml2js). xmlToJson đọc chuỗi XML từ 1 field, jsonToXml đọc object JSON từ 1 field (hoặc cả item nếu để trống).",
+  "icon": "file-code",
+  "inputs": [
+    { "id": "items", "label": "Items", "type": "array" }
+  ],
+  "outputs": [
+    { "id": "items", "label": "Items", "type": "array" }
+  ],
+  "config": [
+    { "id": "mode", "label": "Mode", "type": "select", "options": ["xmlToJson", "jsonToXml"], "default": "xmlToJson" },
+    { "id": "field", "label": "Source Field (dot-notation, empty = whole item)", "type": "text", "default": "" },
+    { "id": "destinationFieldName", "label": "Destination Field Name", "type": "text", "default": "data" },
+    { "id": "explicitArray", "label": "Explicit Array (xmlToJson)", "type": "boolean", "default": false },
+    { "id": "rootName", "label": "Root Name (jsonToXml)", "type": "text", "default": "root" },
+    { "id": "headless", "label": "Headless — bỏ XML declaration (jsonToXml)", "type": "boolean", "default": false }
+  ],
+  "executor": "execute.js"
+}

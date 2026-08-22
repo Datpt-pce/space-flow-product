@@ -1,0 +1,19 @@
+{
+  "id": "remove-duplicates",
+  "name": "Remove Duplicates",
+  "version": "1.0.0",
+  "category": "control",
+  "description": "Loại item trùng lặp trong lần chạy hiện tại (so toàn bộ field, hoặc field chỉ định). Chỉ hỗ trợ mode in-run — không có mode 'seen in previous executions' (cần lưu trạng thái bền vững ngoài 1 lần run, ngoài phạm vi hiện tại).",
+  "icon": "copy-x",
+  "inputs": [
+    { "id": "items", "label": "Items", "type": "array" }
+  ],
+  "outputs": [
+    { "id": "items", "label": "Items", "type": "array" }
+  ],
+  "config": [
+    { "id": "compare", "label": "Compare", "type": "select", "options": ["allFields", "selectedFields"], "default": "allFields" },
+    { "id": "fields", "label": "Fields (comma-separated, dot-notation, used when compare=selectedFields)", "type": "text", "default": "" }
+  ],
+  "executor": "execute.js"
+}

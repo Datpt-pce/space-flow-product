@@ -1,0 +1,21 @@
+{
+  "id": "filter",
+  "name": "Filter",
+  "version": "1.0.0",
+  "category": "control",
+  "description": "Tách items thành 2 nhánh Kept/Discarded theo điều kiện field/operator/value (and/or). Không phải expression engine — chỉ so field trong item với 1 giá trị tĩnh.",
+  "icon": "filter",
+  "inputs": [
+    { "id": "items", "label": "Items", "type": "array" }
+  ],
+  "outputs": [
+    { "id": "kept", "label": "Kept", "type": "array" },
+    { "id": "discarded", "label": "Discarded", "type": "array" }
+  ],
+  "config": [
+    { "id": "conditions", "label": "Conditions (JSON: [{field,operator,value}])", "type": "json", "default": [] },
+    { "id": "combinator", "label": "Combinator", "type": "select", "options": ["and", "or"], "default": "and" },
+    { "id": "ignoreCase", "label": "Ignore Case", "type": "boolean", "default": true }
+  ],
+  "executor": "execute.js"
+}
