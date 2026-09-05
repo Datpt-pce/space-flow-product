@@ -1,0 +1,20 @@
+{
+  "name": "space-flow",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "start": "powershell -NoProfile -ExecutionPolicy Bypass -File start.ps1",
+    "dev": "concurrently \"npm run dev:backend\" \"npm run dev:frontend\"",
+    "dev:backend": "cd backend && node server.js",
+    "dev:frontend": "cd frontend && npx vite",
+    "setup": "node scripts/check-env.js && npm install --prefix frontend && npm install --prefix backend && npm install --prefix nodes",
+    "setup:python": "pip install rembg Pillow requests certifi google-cloud-storage yt-dlp curl_cffi gdown==6.1.0 bandit",
+    "test:e2e": "playwright test"
+  },
+  "devDependencies": {
+    "@axe-core/playwright": "^4.13.0",
+    "@playwright/test": "^1.62.1",
+    "concurrently": "^9.1.2",
+    "exceljs": "^4.4.0"
+  }
+}

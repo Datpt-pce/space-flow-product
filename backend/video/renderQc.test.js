@@ -1,0 +1,11 @@
+const assert = require('node:assert/strict');
+const { renderCapabilityIssues, assertRenderable } = require('./renderQc');
+const clip = { id: 'c', timelineInMs: 1000, transform: { scaleX: 1 }, keyframes: [{ propertyPath: 'transform.scaleX', timeMs: 0, value: 1 }, { propertyPath: 'transform.scaleX', timeMs: 1000, value: 2 }] };
+const doc = { tracks: [{ id: 'v', type: 'video', visible: true, clips: [clip] }] };
+assert.equal(renderCapabilityIssues(doc)[0].timeMs, 1000);
+assert.throws(() => assertRenderable(doc), e => e.status === 422 && e.issues[0].clipId === 'c');
+clip.keyframes[1].value = 1;
+assertRenderable(doc);
+clip.keyframes[0].propertyPath = 'transform.x'; clip.keyframes[1].propertyPath = 'transform.x'; clip.keyframes[1].value = 100;
+assertRenderable(doc);
+console.log('PASS render QC: unsupported motion blocks, constant markers and animated position remain supported');

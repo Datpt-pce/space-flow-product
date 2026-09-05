@@ -1,0 +1,22 @@
+{
+  "id": "extract-from-file",
+  "name": "Extract From File",
+  "version": "1.0.0",
+  "category": "data",
+  "description": "Đọc file binary attachment (item.binary[field] = {path, mimeType, fileName}, xem docs/product/node-spec/README.md) thành JSON. CSV/XLSX fan-out 1 file → N item (1 row/item). JSON fan-out nếu file là mảng. PDF trích text (dùng pdf-parse). Text/toBase64 đọc nguyên file vào 1 field. Không hỗ trợ html/ods/rtf/ical như n8n — ngoài phạm vi đợt này.",
+  "icon": "file-input",
+  "inputs": [
+    { "id": "items", "label": "Items", "type": "array" }
+  ],
+  "outputs": [
+    { "id": "items", "label": "Items", "type": "array" }
+  ],
+  "config": [
+    { "id": "operation", "label": "Operation", "type": "select", "options": ["csv", "xlsx", "json", "pdf", "text", "toBase64"], "default": "csv" },
+    { "id": "sourceBinaryField", "label": "Source Binary Field", "type": "text", "default": "data" },
+    { "id": "destinationFieldName", "label": "Destination Field (pdf/text/toBase64)", "type": "text", "default": "data" },
+    { "id": "delimiter", "label": "Delimiter (csv)", "type": "text", "default": "," },
+    { "id": "header", "label": "Header Row (csv)", "type": "boolean", "default": true }
+  ],
+  "executor": "execute.js"
+}

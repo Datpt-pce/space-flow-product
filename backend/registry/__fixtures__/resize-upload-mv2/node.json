@@ -1,0 +1,38 @@
+{
+  "schemaVersion": 2,
+  "packageId": "resize-upload",
+  "version": "1.0.0",
+  "displayName": "Resize & Upload",
+  "category": "output",
+  "description": "Render nhiều size video (ffmpeg) từ các folder input theo quy ước đặt tên, tùy chọn copy UNC nội bộ, upload GCS và cập nhật Asana.",
+  "icon": "film",
+  "runtime": { "type": "python", "entry": "executor.py" },
+  "inputs": [
+    { "id": "folders_in", "label": "Folders In", "type": "array" }
+  ],
+  "outputs": [
+    { "id": "files_out", "label": "Files Out", "type": "array" },
+    { "id": "unc_links", "label": "UNC Links", "type": "array" },
+    { "id": "gcs_links", "label": "GCS Links", "type": "array" }
+  ],
+  "config": [
+    { "id": "input_folders", "label": "Input Folders", "type": "code", "default": [] },
+    { "id": "output_folder", "label": "Output Folder", "type": "folder", "default": "" },
+    { "id": "mode", "label": "Size Mode", "type": "select", "options": ["3_sizes", "4_sizes_meta", "8_sizes"], "default": "8_sizes" },
+    { "id": "rename_videos", "label": "Rename theo YYMMDD_Theme_CodeApp_Language", "type": "boolean", "default": true },
+    { "id": "bg_style", "label": "Background Style", "type": "select", "options": ["color", "blur", "scale_fill", "pad"], "default": "color" },
+    { "id": "export_thumbnail", "label": "Export Thumbnail", "type": "boolean", "default": true },
+    { "id": "selected_apps", "label": "Distribute To Apps", "type": "code", "default": [] },
+    { "id": "use_unc", "label": "Copy UNC nội bộ", "type": "boolean", "default": true },
+    { "id": "use_gcs", "label": "Upload GCS", "type": "boolean", "default": false },
+    { "id": "use_asana", "label": "Cập nhật Asana", "type": "boolean", "default": true }
+  ],
+  "capabilities": {
+    "network": ["storage.googleapis.com", "app.asana.com"],
+    "filesystem": "user-approved-path",
+    "secrets": ["asana_credential_name", "gcs_credentials_global"],
+    "process": true
+  },
+  "limits": { "timeoutSeconds": 1800, "memoryMB": 4096, "maxOutputMB": 4096 },
+  "compatibility": { "spaceFlow": ">=1.0.0" }
+}

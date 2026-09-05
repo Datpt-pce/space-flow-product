@@ -1,0 +1,18 @@
+{
+  "id": "sticky-note",
+  "name": "Sticky Note",
+  "version": "1.0.0",
+  "category": "data",
+  "description": "A colored note for annotations, reminders, or text content.",
+  "icon": "sticky-note",
+  "inputs": [],
+  "outputs": [],
+  "config": [
+    { "id": "content",  "label": "Content",  "type": "textarea", "default": "", "placeholder": "Write something..." },
+    { "id": "color",    "label": "Color",    "type": "select",   "options": ["yellow","red","orange","green","blue","purple","white"], "default": "yellow" },
+    { "id": "bold",     "label": "Bold",     "type": "boolean",  "default": false },
+    { "id": "italic",   "label": "Italic",   "type": "boolean",  "default": false },
+    { "id": "listMode", "label": "List",     "type": "select",   "options": ["none","bullet","numbered"], "default": "none" }
+  ],
+  "executor": "execute.js"
+}

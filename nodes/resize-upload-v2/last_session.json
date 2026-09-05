@@ -1,0 +1,28 @@
+{
+  "rows": [
+    {
+      "id": "row-1787629374129-icpnn",
+      "selected": true,
+      "app": "",
+      "input_folders": [],
+      "task_urls": "",
+      "mode": "4_sizes_meta",
+      "rename_videos": true,
+      "export_thumbnail": true,
+      "use_unc": true,
+      "use_youtube": false,
+      "use_today_date": true
+    }
+  ],
+  "cred_config_path": "",
+  "cred_links_path": "",
+  "output_folder": "",
+  "bg_style": "color",
+  "color_color": "#FEFBE7",
+  "blur_value": 30,
+  "use_today_date": true,
+  "custom_date": "",
+  "use_asana": true,
+  "asana_field_gid": "",
+  "asana_option_gid": ""
+}

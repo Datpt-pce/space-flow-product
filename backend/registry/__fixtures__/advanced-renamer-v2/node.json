@@ -1,0 +1,24 @@
+{
+  "schemaVersion": 2,
+  "packageId": "advanced-renamer",
+  "version": "1.0.0",
+  "displayName": "Advanced Renamer",
+  "category": "output",
+  "description": "Đổi tên hàng loạt file/folder theo pipeline rule có thứ tự (Add, Swap, List Replace cho file; Folder Name cho folder).",
+  "icon": "file-edit",
+  "runtime": { "type": "python", "entry": "executor.py" },
+  "inputs": [],
+  "outputs": [],
+  "config": [
+    { "id": "base_path", "label": "Thư mục gốc", "type": "text", "default": "" },
+    { "id": "dropped_items", "label": "Items đã kéo vào", "type": "code", "default": [] },
+    { "id": "file_methods", "label": "File Rename Methods", "type": "code", "default": [] },
+    { "id": "folder_methods", "label": "Folder Rename Methods", "type": "code", "default": [] },
+    { "id": "apply_changes", "label": "Thực thi đổi tên (bỏ chọn = chỉ xem trước)", "type": "boolean", "default": false }
+  ],
+  "capabilities": {
+    "filesystem": "user-approved-path"
+  },
+  "limits": { "timeoutSeconds": 60, "memoryMB": 256, "maxOutputMB": 16 },
+  "compatibility": { "spaceFlow": ">=1.0.0" }
+}

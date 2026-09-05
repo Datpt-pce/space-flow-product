@@ -1,0 +1,15 @@
+{
+  "id": "capcut-generate",
+  "name": "CapCut Generate Project",
+  "version": "1.0.0",
+  "runsOn": "local",
+  "category": "output",
+  "description": "Tạo CapCut draft project từ folder video + nhạc",
+  "icon": "folder-plus",
+  "inputs": [],
+  "outputs": [],
+  "config": [
+    { "id": "capcut_dir", "label": "CapCut Projects Dir (trống = auto)", "type": "text", "default": "" }
+  ],
+  "executor": { "type": "python", "script": "executor.py" }
+}

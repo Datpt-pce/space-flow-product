@@ -1,0 +1,26 @@
+# Frontend dev server (Vite). Chay o che do dev (khong build static) de giu nguyen
+# hanh vi proxy /api, /uploads sang backend nhu khi chay native.
+FROM node:20-bookworm
+
+WORKDIR /app
+COPY frontend/package*.json frontend/
+RUN npm install --prefix frontend
+
+# CACHEBUST: buoc build luon copy lai source moi nhat, tranh truong hop Docker Desktop
+# tren Windows doi khi cache nham layer COPY nay du file host da doi (nguyen nhan gay
+# "chay lai shortcut van con code cu" du build khong loi gi). Phai dung trong 1 lenh RUN
+# (khong phai chi khai bao ARG suong) vi cache-key cua COPY chi phu thuoc checksum noi
+# dung file, khong phu thuoc gia tri ARG dung truoc no - chi RUN moi "an" gia tri ARG vao
+# cache-key cua chinh no, tu do lam invalidate moi layer phia sau.
+ARG CACHEBUST=1
+RUN echo "cachebust=$CACHEBUST" > /dev/null
+COPY frontend/ frontend/
+# Video Editor Phase 1 (specs/space-flow-master-plan/04-video-editor.md): frontend/vite.config.js
+# aliases @shared/video-commands to ../shared/video-commands/index.js (a sibling of frontend/,
+# same relative position as on native dev) — without this COPY, Vite's dev server would 500 on
+# any page that imports it once Phase 3's Timeline UI actually wires CommandStack.js in.
+COPY shared/ shared/
+
+WORKDIR /app/frontend
+EXPOSE 2612
+CMD ["npx", "vite"]

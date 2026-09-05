@@ -1,0 +1,16 @@
+{
+  "id": "composition-compile",
+  "name": "Composition Compiler",
+  "version": "1.0.0",
+  "category": "data",
+  "icon": "clapperboard",
+  "description": "Biên dịch phiên bản biến thể đã ghim thành timeline có nguồn gốc. Tạo biến thể trong Video Editor → Bản lưu và duyệt → Mẫu, biến thể và nguồn gốc, rồi sao chép mã biến thể vào đây.",
+  "inputs": [{ "id": "creative_variant", "label": "Biến thể đã ghim", "type": "any", "semanticType": "CreativeVariantVersionRef", "required": false }],
+  "outputs": [
+    { "id": "timeline_collection", "label": "Timeline đã ghim", "type": "any", "semanticType": "TimelineCollectionRef" },
+    { "id": "composition_plan", "label": "Kế hoạch dựng", "type": "any", "semanticType": "CompositionPlan" },
+    { "id": "compile_report", "label": "Kết quả kiểm tra", "type": "any" }
+  ],
+  "config": [{ "id": "creativeVersionId", "label": "Mã phiên bản biến thể", "type": "text", "default": "" }],
+  "executor": "execute.js"
+}

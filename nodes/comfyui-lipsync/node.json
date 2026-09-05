@@ -1,0 +1,29 @@
+{
+  "id": "comfyui-lipsync",
+  "name": "ComfyUI Lip-Sync",
+  "version": "1.0.0",
+  "runsOn": "local",
+  "category": "ai",
+  "description": "Stage 4 — lựa chọn local (specs/english-teaching-video-pipeline.md §4.4, §0). Gọi ComfyUI server local (giống comfyui-tts) chạy custom node Wav2Lip: upload ảnh tham chiếu + audio qua /upload/image → submit /prompt → poll /history → tải video qua /view. Default workflowJson là graph THẬT đã verify sống trên server (LoadImage → RepeatImageBatch → Wav2Lip + LoadAudio → VHS_VideoCombine, cần cài ComfyUI_wav2lip + ComfyUI-VideoHelperSuite). Resumable theo index giống comfyui-tts/elevenlabs-tts/replicate-lipsync.",
+  "icon": "video",
+  "inputs": [
+    { "id": "items", "label": "Scenes", "type": "array", "required": true }
+  ],
+  "outputs": [
+    { "id": "items", "label": "Items", "type": "array" },
+    { "id": "error", "label": "Error", "type": "json" }
+  ],
+  "config": [
+    { "id": "comfyUrl", "label": "ComfyUI Base URL (để trống để dùng Local Services registry trong Settings, hoặc điền URL cụ thể để override riêng cho node này)", "type": "text", "default": "" },
+    { "id": "referenceImagePath", "label": "Reference Image Path (dùng chung cho mọi scene nếu scene không tự mang ảnh riêng)", "type": "file", "default": "" },
+    { "id": "workflowJson", "label": "Workflow Graph JSON (ComfyUI API format)", "type": "textarea", "default": "{\n  \"load_image\": { \"class_type\": \"LoadImage\", \"inputs\": { \"image\": \"\" } },\n  \"repeat_image\": { \"class_type\": \"RepeatImageBatch\", \"inputs\": { \"image\": [\"load_image\", 0], \"amount\": 1 } },\n  \"load_audio\": { \"class_type\": \"LoadAudio\", \"inputs\": { \"audio\": \"\" } },\n  \"wav2lip\": { \"class_type\": \"Wav2Lip\", \"inputs\": { \"images\": [\"repeat_image\", 0], \"audio\": [\"load_audio\", 0], \"mode\": \"sequential\", \"face_detect_batch\": 1 } },\n  \"combine\": { \"class_type\": \"VHS_VideoCombine\", \"inputs\": { \"images\": [\"wav2lip\", 0], \"audio\": [\"wav2lip\", 1], \"frame_rate\": 24, \"loop_count\": 0, \"filename_prefix\": \"comfyui-lipsync/scene\", \"format\": \"video/h264-mp4\", \"pingpong\": false, \"save_output\": true } }\n}" },
+    { "id": "imageLoadNodeId", "label": "Image LoadImage Node ID", "type": "text", "default": "load_image" },
+    { "id": "audioLoadNodeId", "label": "Audio LoadAudio Node ID", "type": "text", "default": "load_audio" },
+    { "id": "repeatImageNodeId", "label": "RepeatImageBatch Node ID (amount tự tính theo duration audio × frameRate)", "type": "text", "default": "repeat_image" },
+    { "id": "videoOutputNodeId", "label": "VHS_VideoCombine Node ID", "type": "text", "default": "combine" },
+    { "id": "frameRate", "label": "Frame Rate", "type": "number", "default": 24, "min": 1, "max": 60, "step": 1 },
+    { "id": "pollIntervalMs", "label": "Poll Interval (ms)", "type": "number", "default": 3000, "min": 500, "step": 500 },
+    { "id": "pollTimeoutMs", "label": "Poll Timeout per scene (ms)", "type": "number", "default": 1800000, "min": 5000, "step": 1000 }
+  ],
+  "executor": "execute.js"
+}

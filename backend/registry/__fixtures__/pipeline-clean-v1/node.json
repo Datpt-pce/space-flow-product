@@ -1,0 +1,18 @@
+{
+  "schemaVersion": 2,
+  "packageId": "pipeline-clean-test",
+  "version": "1.0.0",
+  "displayName": "Pipeline Clean Test",
+  "category": "data",
+  "description": "Test fixture only — proves the Phase 6 registry submission pipeline (backend/registry/pipeline/) accepts a well-behaved package all the way to AdminReview, not a production node.",
+  "icon": "package",
+  "runtime": { "type": "javascript", "entry": "execute.js" },
+  "inputs": [],
+  "outputs": [
+    { "id": "items", "label": "Items", "type": "array" }
+  ],
+  "config": [],
+  "capabilities": {},
+  "limits": { "timeoutSeconds": 10, "memoryMB": 128, "maxOutputMB": 16 },
+  "compatibility": { "spaceFlow": ">=1.0.0" }
+}

@@ -1,0 +1,44 @@
+{
+  "id": "video-editor-workbench",
+  "name": "Video Editor",
+  "version": "1.1.0",
+  "category": "output",
+  "icon": "clapperboard",
+  "description": "Chỉnh sửa video, lưu và duyệt phiên bản. Workflow chạy đúng bản được ghim; input/output TimelineCollectionRef được kiểm tra projectId và versionId.",
+  "inputs": [
+    {
+      "id": "timeline_collection",
+      "label": "Timeline đã ghim",
+      "type": "any",
+      "semanticType": "TimelineCollectionRef",
+      "required": false
+    }
+  ],
+  "outputs": [
+    {
+      "id": "timeline_collection",
+      "label": "Timeline Collection",
+      "type": "any",
+      "semanticType": "TimelineCollectionRef"
+    }
+  ],
+  "config": [
+    {
+      "id": "projectId",
+      "label": "Project ID (tự tạo khi mở editor lần đầu)",
+      "type": "text",
+      "default": ""
+    },
+    {
+      "id": "versionId",
+      "label": "Bản ghim (chọn trên node)",
+      "type": "text",
+      "default": ""
+    }
+  ],
+  "clearConfigOnDuplicate": [
+    "projectId",
+    "versionId"
+  ],
+  "executor": "execute.js"
+}

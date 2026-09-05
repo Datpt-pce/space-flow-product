@@ -1,0 +1,19 @@
+{
+  "id": "rename-keys",
+  "name": "Rename Keys",
+  "version": "1.0.0",
+  "category": "data",
+  "description": "Đổi tên field trong mỗi object của mảng items — theo danh sách currentKey→newKey (dot-notation) và/hoặc quy tắc regex trên tên field.",
+  "icon": "edit-3",
+  "inputs": [
+    { "id": "items", "label": "Items", "type": "array" }
+  ],
+  "outputs": [
+    { "id": "items", "label": "Items", "type": "array" }
+  ],
+  "config": [
+    { "id": "keys", "label": "Rename List (JSON: [{from,to}])", "type": "json", "default": [] },
+    { "id": "regexRules", "label": "Regex Rules (JSON: [{pattern,replacement,flags}])", "type": "json", "default": [] }
+  ],
+  "executor": "execute.js"
+}

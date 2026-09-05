@@ -1,0 +1,19 @@
+{
+  "id": "limit",
+  "name": "Limit",
+  "version": "1.0.0",
+  "category": "data",
+  "description": "Giới hạn số lượng item đi qua — giữ N item đầu hoặc N item cuối.",
+  "icon": "scissors",
+  "inputs": [
+    { "id": "items", "label": "Items", "type": "array" }
+  ],
+  "outputs": [
+    { "id": "items", "label": "Items", "type": "array" }
+  ],
+  "config": [
+    { "id": "maxItems", "label": "Max Items", "type": "number", "default": 1, "min": 1, "step": 1 },
+    { "id": "keep", "label": "Keep", "type": "select", "options": ["firstItems", "lastItems"], "default": "firstItems" }
+  ],
+  "executor": "execute.js"
+}

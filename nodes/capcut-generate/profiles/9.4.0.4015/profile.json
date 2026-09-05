@@ -1,0 +1,18 @@
+{
+  "id": "capcut-windows-9.4.0.4015",
+  "appBuild": "9.4.0.4015",
+  "appVersion": "9.4.0",
+  "channel": "beta",
+  "draftVersion": 360000,
+  "newVersion": "185.0.0",
+  "certified": true,
+  "mode": "rendered-video",
+  "features": {
+    "packagedMediaBytes": "exact",
+    "capcutReencodedOutput": "approximated",
+    "editableSourceTracks": "omitted-with-block",
+    "sourceEffectsAndKeyframes": "omitted-with-block",
+    "capcutImportRoundTrip": "unsupported"
+  },
+  "evidence": "2026-09-05: generated SFQualification-940-Video installed, opened, saved, exported and reopened in CapCut 9.4.0.4015. H.264/AAC export decoded fully; duration delta 20.328 ms; audio correlation 0.999980. Native export may resize/reencode. This certifies rendered-video handoff only."
+}

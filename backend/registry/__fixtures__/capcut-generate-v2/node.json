@@ -1,0 +1,24 @@
+{
+  "schemaVersion": 2,
+  "packageId": "capcut-generate",
+  "version": "1.0.0",
+  "displayName": "CapCut Generate",
+  "category": "output",
+  "description": "Sinh project draft CapCut (draft_content.json + material) từ video/nhạc/transition/text template, ghi thẳng vào thư mục Projects của CapCut.",
+  "icon": "clapperboard",
+  "runtime": { "type": "python", "entry": "executor.py" },
+  "inputs": [],
+  "outputs": [
+    { "id": "project_path", "label": "Project Path", "type": "string" }
+  ],
+  "config": [
+    { "id": "capcut_dir", "label": "CapCut Projects Dir", "type": "folder", "default": "" },
+    { "id": "timelines", "label": "Timelines", "type": "code", "default": [] }
+  ],
+  "capabilities": {
+    "filesystem": "user-approved-path",
+    "process": true
+  },
+  "limits": { "timeoutSeconds": 300, "memoryMB": 512, "maxOutputMB": 1024 },
+  "compatibility": { "spaceFlow": ">=1.0.0" }
+}

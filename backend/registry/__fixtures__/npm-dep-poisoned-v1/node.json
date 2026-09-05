@@ -1,0 +1,18 @@
+{
+  "schemaVersion": 2,
+  "packageId": "npm-dep-poisoned-test",
+  "version": "1.0.0",
+  "displayName": "NPM Dependency Poisoning Test",
+  "category": "data",
+  "description": "Test fixture only — Custom Node Platform Phase 9 hardening (backend/registry/dependencies.js's --ignore-scripts). Declares a local dependency with a postinstall script that writes a marker file; the test asserts that marker never appears, proving lifecycle scripts don't run during installDependencies().",
+  "icon": "package",
+  "runtime": { "type": "javascript", "entry": "execute.js" },
+  "inputs": [],
+  "outputs": [
+    { "id": "items", "label": "Items", "type": "array" }
+  ],
+  "config": [],
+  "capabilities": {},
+  "limits": { "timeoutSeconds": 10, "memoryMB": 128, "maxOutputMB": 16 },
+  "compatibility": { "spaceFlow": ">=1.0.0" }
+}

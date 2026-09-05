@@ -1,0 +1,72 @@
+# Backend + execution engine (Node.js + Python cho cac node AI/xu ly anh).
+# Dong goi san Node + Python + pip deps + ffmpeg de teammate khong can tu cai gi tren may that.
+# Node >=22.13 bat buoc — backend/db dung node:sqlite (built-in, khong build native) thay
+# better-sqlite3; Node 20 khong co module nay.
+FROM node:22-bookworm
+
+# bubblewrap: go/no-go confirmed (docs/decisions/0011-bubblewrap-feasibility-spike.md) — used by
+# the future Custom Node Sandbox Host (backend/sandbox/, Custom Node Platform Phase 3) to run
+# registry packages in a real OS-level namespace, not this main backend container. Installing the
+# binary here only makes it available; actually invoking it needs a relaxed seccomp profile this
+# container does NOT have yet (docker-compose.yml has no cap_add/security_opt) — do not assume
+# bwrap works from inside this container until that's wired up alongside the real Sandbox Host.
+RUN apt-get update && apt-get install -y --no-install-recommends \
+      python3 python3-pip ffmpeg gifsicle bubblewrap curl ca-certificates fonts-dejavu-core \
+    && ln -s /usr/bin/python3 /usr/bin/python \
+    && rm -rf /var/lib/apt/lists/*
+
+# spawnPython (backend/engine/runner.js) goi lenh "python" — da tao symlink o tren.
+#
+# Chi cai nhung gi cac node hien tai thuc su dung (Pillow, requests, certifi) + rembg
+# (xoa nen, dung ONNXRuntime chu khong can PyTorch). Khong cai torch/basicsr/realesrgan
+# vi chua node nao dung va rat nang (hang GB, hay xung dot version) — them lai khi thuc
+# su can node upscale. bandit: Custom Node Platform Phase 6 registry submission pipeline's
+# static-scan step (backend/registry/pipeline/05-static-scan.js) — Python counterpart of
+# eslint-plugin-security (npm dep, backend/package.json), shells out to `bandit -f json`.
+RUN pip3 install --break-system-packages --no-cache-dir "rembg[cpu]" Pillow requests certifi google-cloud-storage yt-dlp curl_cffi "gdown==6.1.0" bandit
+
+# Syft/Grype (Anchore, Apache-2.0): Custom Node Platform Phase 6 registry submission pipeline's
+# SBOM (03-sbom.js) + vuln-scan (04-vuln-license.js) steps — see
+# specs/space-flow-master-plan/01-custom-node-platform.md §3. Both steps check `which syft`/
+# `which grype` at runtime and degrade to a "skipped, tool unavailable" finding (elevates risk
+# score, does not hard-block the pipeline) rather than crash if these binaries are ever missing
+# from wherever the pipeline actually runs — this install is defense in depth, not a hard
+# runtime dependency of the pipeline code itself.
+RUN curl -sSfL https://raw.githubusercontent.com/anchore/syft/main/install.sh | sh -s -- -b /usr/local/bin \
+    && curl -sSfL https://raw.githubusercontent.com/anchore/grype/main/install.sh | sh -s -- -b /usr/local/bin
+
+WORKDIR /app
+COPY backend/package*.json backend/
+RUN npm install --prefix backend
+
+# nodes/*/execute.js resolve require() relative to their own directory (nodes/<id>/),
+# never reaching backend/node_modules (a sibling, not an ancestor) — so any npm package
+# a node executor needs must be installed here, not in backend/package.json.
+COPY nodes/package*.json nodes/
+RUN npm install --prefix nodes
+
+# CACHEBUST: buoc build luon copy lai source moi nhat, tranh truong hop Docker Desktop
+# tren Windows doi khi cache nham layer COPY nay du file host da doi (nguyen nhan gay
+# "chay lai shortcut van con code cu" du build khong loi gi). Phai dung trong 1 lenh RUN
+# (khong phai chi khai bao ARG suong) vi cache-key cua COPY chi phu thuoc checksum noi
+# dung file, khong phu thuoc gia tri ARG dung truoc no - chi RUN moi "an" gia tri ARG vao
+# cache-key cua chinh no, tu do lam invalidate moi layer phia sau.
+ARG CACHEBUST=1
+RUN echo "cachebust=$CACHEBUST" > /dev/null
+COPY backend/ backend/
+COPY nodes/ nodes/
+# Video Editor Phase 1 (specs/space-flow-master-plan/04-video-editor.md): backend/routes/
+# video-projects.js does `require('../../shared/video-commands')` — a sibling directory to
+# backend/, same as nodes/ above. Missing this COPY would crash the server at boot in this
+# container specifically (works fine on native Windows dev, where shared/ already sits at the
+# repo root next to backend/) — exactly the class of bug CLAUDE.md §10 exists to catch.
+COPY shared/ shared/
+
+# node:22-bookworm da co san user "node" (UID 1000) — dung luon, khong tao user moi (useradd -u
+# 1000 se dung UID voi user "node" co san, build loi "UID 1000 is not unique").
+RUN chown -R node:node /app
+USER node
+
+WORKDIR /app/backend
+EXPOSE 4001
+CMD ["node", "server.js"]

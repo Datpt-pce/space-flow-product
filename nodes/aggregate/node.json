@@ -1,0 +1,21 @@
+{
+  "id": "aggregate",
+  "name": "Aggregate",
+  "version": "1.0.0",
+  "category": "data",
+  "description": "Gộp nhiều item thành 1 item duy nhất — hoặc gom giá trị của các field chỉ định thành mảng (mode fields), hoặc nhét nguyên cả mảng items vào 1 field (mode allData). Ngược với Split Out.",
+  "icon": "layers",
+  "inputs": [
+    { "id": "items", "label": "Items", "type": "array" }
+  ],
+  "outputs": [
+    { "id": "items", "label": "Items", "type": "array" }
+  ],
+  "config": [
+    { "id": "mode", "label": "Mode", "type": "select", "options": ["fields", "allData"], "default": "fields" },
+    { "id": "fieldsToAggregate", "label": "Fields To Aggregate (JSON: [{field,outputFieldName}])", "type": "json", "default": [] },
+    { "id": "mergeLists", "label": "Merge Lists (flatten array values)", "type": "boolean", "default": false },
+    { "id": "destinationFieldName", "label": "Destination Field Name (allData mode)", "type": "text", "default": "data" }
+  ],
+  "executor": "execute.js"
+}
