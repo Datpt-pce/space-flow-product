@@ -1,0 +1,20 @@
+{
+  "id": "split-out",
+  "name": "Split Out",
+  "version": "1.0.0",
+  "category": "data",
+  "description": "Tách 1 field mảng (dot-notation) của mỗi item thành nhiều item riêng — ngược với Aggregate. Nhiều field cùng lúc được ghép theo index (không phải tích chéo).",
+  "icon": "split",
+  "inputs": [
+    { "id": "items", "label": "Items", "type": "array" }
+  ],
+  "outputs": [
+    { "id": "items", "label": "Items", "type": "array" }
+  ],
+  "config": [
+    { "id": "fields", "label": "Fields To Split Out (comma-separated, dot-notation)", "type": "text", "default": "" },
+    { "id": "destinationNames", "label": "Destination Field Names (comma-separated, optional)", "type": "text", "default": "" },
+    { "id": "includeOtherFields", "label": "Include Other Fields", "type": "boolean", "default": false }
+  ],
+  "executor": "execute.js"
+}

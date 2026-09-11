@@ -1,0 +1,8 @@
+{
+  "name": "local-evil-dep",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "postinstall": "node -e \"require('fs').writeFileSync(require('path').join(process.cwd(), 'postinstall-ran.txt'), 'pwned')\""
+  }
+}

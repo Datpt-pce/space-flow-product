@@ -1,0 +1,59 @@
+[
+  {
+    "type": "crossfade",
+    "name": "Crossfade",
+    "nativeName": "Mix",
+    "effectId": "6724845717472416269",
+    "ffmpeg": "fade",
+    "isOverlap": true
+  },
+  {
+    "type": "clock-wipe",
+    "name": "Clock wipe",
+    "effectId": "6851775006418932238",
+    "ffmpeg": "radial",
+    "isOverlap": true
+  },
+  {
+    "type": "right",
+    "name": "Right",
+    "effectId": "6724227599616184836",
+    "ffmpeg": "slideright",
+    "isOverlap": false
+  },
+  {
+    "type": "down",
+    "name": "Down",
+    "effectId": "6724849276100284942",
+    "ffmpeg": "slidedown",
+    "isOverlap": true
+  },
+  {
+    "type": "up",
+    "name": "Up",
+    "effectId": "6724846395116753416",
+    "ffmpeg": "slideup",
+    "isOverlap": true
+  },
+  {
+    "type": "left",
+    "name": "Left",
+    "effectId": "6726711499676455435",
+    "ffmpeg": "slideleft",
+    "isOverlap": true
+  },
+  {
+    "type": "pull-out",
+    "name": "Pull Out",
+    "effectId": "6724226338418332167",
+    "ffmpeg": "custom",
+    "isOverlap": false
+  },
+  {
+    "type": "pull-in",
+    "name": "Pull in",
+    "effectId": "6724226861666144779",
+    "ffmpeg": "zoomin",
+    "isOverlap": false
+  }
+]

@@ -1,0 +1,25 @@
+{
+  "id": "compare-datasets",
+  "name": "Compare Datasets",
+  "version": "1.0.0",
+  "category": "control",
+  "description": "So sánh 2 tập dữ liệu (Input A / Input B), ghép cặp theo matchFields, phân vào 4 nhánh: In A only / Same / Different / In B only.",
+  "icon": "git-compare",
+  "inputs": [
+    { "id": "inputA", "label": "Input A", "type": "array" },
+    { "id": "inputB", "label": "Input B", "type": "array", "required": false }
+  ],
+  "outputs": [
+    { "id": "inAOnly", "label": "In A only", "type": "array" },
+    { "id": "same", "label": "Same", "type": "array" },
+    { "id": "different", "label": "Different", "type": "array" },
+    { "id": "inBOnly", "label": "In B only", "type": "array" }
+  ],
+  "config": [
+    { "id": "matchFields", "label": "Fields To Match (JSON: [{fieldA,fieldB}])", "type": "json", "default": [] },
+    { "id": "resolve", "label": "When There Are Differences", "type": "select", "options": ["preferInput1", "preferInput2", "mix", "includeBoth"], "default": "includeBoth" },
+    { "id": "fuzzyCompare", "label": "Fuzzy Compare", "type": "boolean", "default": false },
+    { "id": "skipFields", "label": "Skip Fields (comma-separated)", "type": "text", "default": "" }
+  ],
+  "executor": "execute.js"
+}

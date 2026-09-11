@@ -1,0 +1,31 @@
+{
+  "id": "switch",
+  "name": "Switch",
+  "version": "1.0.0",
+  "category": "control",
+  "description": "Route mỗi item vào 1 trong nhiều nhánh theo danh sách rule (field/operator/value) — rule đầu tiên khớp thắng, trừ khi bật allMatchingOutputs. Số lượng/tên nhánh hiện trên canvas theo rules[] (xem quy ước dynamicOutputs trong docs/product/node-spec/README.md). Không có mode expression như n8n (cần eval JS tuỳ ý để tính output index — ngoài phạm vi đợt này).",
+  "icon": "shuffle",
+  "inputs": [
+    { "id": "items", "label": "Items", "type": "array" }
+  ],
+  "outputs": [
+    { "id": "output0", "label": "Output 0", "type": "array" },
+    { "id": "output1", "label": "Output 1", "type": "array" },
+    { "id": "output2", "label": "Output 2", "type": "array" },
+    { "id": "output3", "label": "Output 3", "type": "array" },
+    { "id": "output4", "label": "Output 4", "type": "array" },
+    { "id": "output5", "label": "Output 5", "type": "array" },
+    { "id": "output6", "label": "Output 6", "type": "array" },
+    { "id": "output7", "label": "Output 7", "type": "array" },
+    { "id": "output8", "label": "Output 8", "type": "array" },
+    { "id": "fallback", "label": "Fallback", "type": "array" }
+  ],
+  "dynamicOutputs": { "namesField": "rules", "nameKey": "outputName", "fallbackField": "fallbackOutput", "min": 1, "max": 10 },
+  "config": [
+    { "id": "rules", "label": "Rules (JSON: [{conditions:[{field,operator,value}],combinator,outputName}])", "type": "json", "default": [] },
+    { "id": "ignoreCase", "label": "Ignore Case", "type": "boolean", "default": true },
+    { "id": "fallbackOutput", "label": "Fallback Output", "type": "select", "options": ["none", "extra"], "default": "none" },
+    { "id": "allMatchingOutputs", "label": "Send To All Matching Outputs", "type": "boolean", "default": false }
+  ],
+  "executor": "execute.js"
+}

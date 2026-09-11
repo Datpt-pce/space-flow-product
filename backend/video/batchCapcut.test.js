@@ -1,0 +1,84 @@
+const assert = require('node:assert/strict');
+const { DatabaseSync } = require('node:sqlite');
+const { createBatchCapcut } = require('./batchCapcut');
+const db = new DatabaseSync(':memory:');
+db.exec("PRAGMA foreign_keys=ON; CREATE TABLE users(id TEXT PRIMARY KEY); INSERT INTO users VALUES ('owner'), ('other')");
+require('./schema').ensureVideoSchema(db);
+require.cache[require.resolve('../db')] = { id:require.resolve('../db'), filename:require.resolve('../db'), loaded:true, exports:db };
+const service = require('../routes/video-batch').service;
+
+(async () => {
+  try {
+    let project = service.create('owner', { id:'capcut-test', name:'BCL' });
+    const hash = 'a'.repeat(64);
+    for (const id of ['one', 'two']) db.prepare("INSERT INTO video_assets(id,owner_id,source_path,content_hash,duration_ms,kind,status,source_locality,width,height) VALUES (?,'owner',?,?,6000,'video','ok','server',160,160)").run(id, `${id}.mp4`, hash);
+    project.draft.lists = [{ id:'list', name:'Clips', minRating:0, items:['one','two'].map((id, manualOrder) => ({ id, label:id, manualOrder, rating:0, sourceRef:{ kind:'media', assetId:id, contentHash:hash } })) }];
+    project.draft.tracks = [{ id:'video', name:'Video', type:'video', slots:[{ id:'slot', listId:'list', vary:true, durationMode:'fixed', durationFrames:150 }] }];
+    project = service.save('owner', project.id, { expectedRevision:project.revision, name:project.name, draft:project.draft });
+    const pre = service.preflight('owner', project.id, { expectedRevision:project.revision });
+    let machineId = 'machine', callback = () => {}, calls = [], transfers = [];
+    const run = async (type, payload) => {
+      calls.push({ type, payload });
+      if (type === 'delivery-info') return { machineId };
+      if (payload.operation === 'install') return { path:'local/CapCut/project' };
+      if (payload.operation?.startsWith('render-')) return { id:payload.requestKey, status:payload.operation === 'render-start' ? 'queued' : 'completed' };
+      assert.equal(payload.timelines.length, 2);
+      assert.ok(payload.timelines.every(t => t.document.tracks[0].clips[0].timelineOutMs === 5000));
+      callback();
+      return { path:'trusted/staging/package', report:{ mode:'editable-batch', sourceVersion:payload.sourceVersion, timelineCount:2, timelines:[{ id:'timeline-one' }, { id:'timeline-two' }] } };
+    };
+    const capcut = createBatchCapcut(db, service, { remote:true, runner:() => run, transfer:async source => { transfers.push(source); return 'agent/' + source; } });
+    const req = { expectedRevision:project.revision, inputHash:pre.inputHash, name:'BCL project', requestKey:'first' };
+    await assert.rejects(capcut.prepare('other', project.id, req), e => e.status === 404);
+    await assert.rejects(capcut.prepare('owner', project.id, { ...req, inputHash:'b'.repeat(64) }), /đã đổi/);
+    const prepared = await capcut.prepare('owner', project.id, req);
+    assert.equal(prepared.status, 'prepared'); assert.equal(prepared.report.timelineCount, 2);
+    assert.equal(prepared.package_path, undefined, 'staging path is not client input');
+    await assert.rejects(capcut.render('owner', project.id, prepared.id, {}), /Hoàn tất Convert/);
+    assert.deepEqual(transfers, ['one.mp4', 'two.mp4']);
+    assert.equal(calls.find(c => c.payload.operation === 'prepare-batch').payload.assets.one.path, 'agent/one.mp4');
+    assert.equal(calls.find(c => c.payload.operation === 'prepare-batch').payload.build, undefined);
+    const before = calls.length;
+    assert.equal((await capcut.prepare('owner', project.id, req)).id, prepared.id);
+    assert.equal(calls.length, before, 'retry reuses receipt');
+    await assert.rejects(capcut.prepare('owner', project.id, { ...req, name:'changed' }), /đã dùng/);
+    await assert.rejects(capcut.install('other', project.id, prepared.id), e => e.status === 404);
+    await assert.rejects(capcut.install('owner', project.id, 'unknown'), e => e.status === 404);
+    machineId = 'different';
+    await assert.rejects(capcut.install('owner', project.id, prepared.id), /Máy CapCut đã đổi/);
+    machineId = 'machine';
+    const installed = await capcut.install('owner', project.id, prepared.id);
+    assert.equal(installed.status, 'installed');
+    assert.deepEqual(calls.at(-1).payload, { operation:'install', packagePath:'trusted/staging/package' });
+    const installedCount = calls.length;
+    assert.equal((await capcut.install('owner', project.id, prepared.id)).path, 'local/CapCut/project');
+    assert.equal(calls.length, installedCount);
+    assert.equal(capcut.list('owner', project.id).length, 1);
+    const render = { requestKey:require('node:crypto').randomUUID(), timelineId:'timeline-two', outputDir:'D:/exports' };
+    await assert.rejects(capcut.render('other', project.id, prepared.id, render), e => e.status === 404);
+    await assert.rejects(capcut.render('owner', project.id, prepared.id, { ...render, timelineId:'foreign-timeline' }), e => e.status === 400);
+    await assert.rejects(capcut.render('owner', project.id, prepared.id, { ...render, requestKey:'../escape' }), e => e.status === 400);
+    machineId = 'different';
+    await assert.rejects(capcut.render('owner', project.id, prepared.id, render), /Máy CapCut đã đổi/);
+    machineId = 'machine';
+    assert.equal((await capcut.render('owner', project.id, prepared.id, { ...render, packagePath:'untrusted' })).status, 'queued');
+    assert.deepEqual(calls.at(-1).payload, { operation:'render-start', packagePath:'trusted/staging/package', ...render });
+    for (const timelineIds of [[], ['timeline-one', 'timeline-one'], ['foreign'], 'timeline-one', Array(101).fill('timeline-one'), [null]]) {
+      await assert.rejects(capcut.render('owner', project.id, prepared.id, { ...render, timelineIds }), e => e.status === 400);
+    }
+    const batchRender = { requestKey:require('node:crypto').randomUUID(), timelineIds:['timeline-two', 'timeline-one'], outputDir:'D:/exports' };
+    assert.equal((await capcut.render('owner', project.id, prepared.id, batchRender)).status, 'queued');
+    assert.deepEqual(calls.at(-1).payload, { operation:'render-start', packagePath:'trusted/staging/package', ...batchRender });
+    assert.equal((await capcut.render('owner', project.id, prepared.id, { requestKey:render.requestKey }, true)).status, 'completed');
+    assert.deepEqual(calls.at(-1).payload, { operation:'render-status', packagePath:'trusted/staging/package', requestKey:render.requestKey });
+    db.exec("UPDATE video_assets SET source_locality='agent',source_machine_id='different'");
+    await assert.rejects(capcut.prepare('owner', project.id, { ...req, requestKey:'wrong-machine' }), /Nguồn thuộc máy khác/);
+    db.exec("UPDATE video_assets SET source_locality='server'");
+    callback = () => db.exec("UPDATE video_assets SET content_hash='changed' WHERE id='one'");
+    await assert.rejects(capcut.prepare('owner', project.id, { ...req, requestKey:'changed-source' }), /Nguồn thay đổi/);
+    assert.equal(capcut.list('owner', project.id).length, 1, 'no receipt after source race');
+    assert.equal(db.prepare('SELECT count(*) AS n FROM video_render_jobs').get().n, 0);
+    assert.equal(db.prepare('SELECT count(*) AS n FROM video_projects').get().n, 0, 'no editor timelines or renders needed');
+    console.log('PASS BCL CapCut: variants, seconds, owner/source/machine binding, stale hash, retry, no render or editor mutation');
+  } finally { db.close(); }
+})().catch(error => { console.error(error); process.exitCode = 1; });

@@ -1,0 +1,18 @@
+{
+  "schemaVersion": 2,
+  "packageId": "npm-dep-test",
+  "version": "1.0.0",
+  "displayName": "NPM Dep Test",
+  "category": "data",
+  "description": "Test fixture only — proves install() materializes a real npm dependency (see backend/registry/dependencies.js and docs/issues/2026-08-28-sfpkg-npm-dependency-not-installed.md), not a production node.",
+  "icon": "package",
+  "runtime": { "type": "javascript", "entry": "execute.js" },
+  "inputs": [],
+  "outputs": [
+    { "id": "items", "label": "Items", "type": "array" }
+  ],
+  "config": [],
+  "capabilities": {},
+  "limits": { "timeoutSeconds": 10, "memoryMB": 128, "maxOutputMB": 16 },
+  "compatibility": { "spaceFlow": ">=1.0.0" }
+}

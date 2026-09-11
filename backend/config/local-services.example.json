@@ -1,0 +1,4 @@
+{
+  "ollama": { "baseUrl": "http://localhost:11434" },
+  "comfyui": { "baseUrl": "http://127.0.0.1:8188" }
+}

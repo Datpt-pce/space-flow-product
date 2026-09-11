@@ -1,0 +1,26 @@
+{
+  "id": "seed-vc",
+  "name": "Seed-VC (Voice Conversion)",
+  "version": "1.0.0",
+  "category": "ai",
+  "description": "Voice conversion — chèn giữa Stage 3a (TTS) và Stage 4 (lipsync). Nhận audio nguồn (vd audio TTS thô) cho từng scene + 1 file audio giọng tham chiếu cố định (1-30s, dùng chung mọi scene), chuyển nội dung audio nguồn sang giọng tham chiếu bằng ComfyUI custom node SeedVC-ComfyUI (github.com/AIFSH/SeedVC-ComfyUI, class SeedVCNode — zero-shot voice conversion, không phải TTS, không cần text). Gọi ComfyUI server local giống comfyui-tts/comfyui-lipsync: upload 2 file audio qua /upload/image → submit /prompt → poll /history → tải audio kết quả (FLAC) qua /view. Default workflowJson là graph THẬT đã verify sống trên server (LoadAudio×2 → SeedVCNode → SaveAudio, cần cài SeedVC-ComfyUI — model tự tải qua HuggingFace lần chạy đầu tiên nếu chưa tự tải trước). Resumable theo index giống comfyui-tts/comfyui-lipsync.",
+  "icon": "audio-lines",
+  "inputs": [
+    { "id": "items", "label": "Scenes (source audio)", "type": "array", "required": true }
+  ],
+  "outputs": [
+    { "id": "items", "label": "Items", "type": "array" },
+    { "id": "error", "label": "Error", "type": "json" }
+  ],
+  "config": [
+    { "id": "comfyUrl", "label": "ComfyUI Base URL (để trống để dùng Local Services registry trong Settings, hoặc điền URL cụ thể để override riêng cho node này)", "type": "text", "default": "" },
+    { "id": "referenceAudioPath", "label": "Reference Voice Audio Path (1-30s, dùng chung cho mọi scene)", "type": "file", "default": "" },
+    { "id": "workflowJson", "label": "Workflow Graph JSON (ComfyUI API format)", "type": "textarea", "default": "{\n  \"load_source\": { \"class_type\": \"LoadAudio\", \"inputs\": { \"audio\": \"\" } },\n  \"load_target\": { \"class_type\": \"LoadAudio\", \"inputs\": { \"audio\": \"\" } },\n  \"seedvc\": { \"class_type\": \"SeedVCNode\", \"inputs\": { \"source\": [\"load_source\", 0], \"target\": [\"load_target\", 0], \"diffusion_steps\": 10, \"length_adjust\": 1.0, \"inference_cfg_rate\": 0.7 } },\n  \"save\": { \"class_type\": \"SaveAudio\", \"inputs\": { \"audio\": [\"seedvc\", 0], \"filename_prefix\": \"seed-vc/scene\" } }\n}" },
+    { "id": "sourceAudioLoadNodeId", "label": "Source LoadAudio Node ID", "type": "text", "default": "load_source" },
+    { "id": "targetAudioLoadNodeId", "label": "Target LoadAudio Node ID", "type": "text", "default": "load_target" },
+    { "id": "audioOutputNodeId", "label": "SaveAudio Node ID", "type": "text", "default": "save" },
+    { "id": "pollIntervalMs", "label": "Poll Interval (ms)", "type": "number", "default": 3000, "min": 500, "step": 500 },
+    { "id": "pollTimeoutMs", "label": "Poll Timeout per scene (ms)", "type": "number", "default": 300000, "min": 5000, "step": 1000 }
+  ],
+  "executor": "execute.js"
+}

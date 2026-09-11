@@ -1,0 +1,18 @@
+{
+  "id": "code",
+  "name": "Code",
+  "version": "1.0.0",
+  "category": "data",
+  "description": "Viết JavaScript tuỳ ý để transform input → output ngay trong workflow, không cần tạo node riêng.",
+  "icon": "code",
+  "inputs": [
+    { "id": "input", "label": "Input", "type": "any", "required": false }
+  ],
+  "outputs": [
+    { "id": "output", "label": "Output", "type": "any" }
+  ],
+  "config": [
+    { "id": "code", "label": "Code (JavaScript)", "type": "textarea", "default": "return input;" }
+  ],
+  "executor": "execute.js"
+}

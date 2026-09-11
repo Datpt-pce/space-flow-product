@@ -1,0 +1,33 @@
+{
+  "id": "list",
+  "name": "List",
+  "version": "1.0.0",
+  "runsOn": "local",
+  "category": "data",
+  "description": "Universal list — holds files, text items, or table rows, mixed and reorderable.",
+  "icon": "list",
+  "inputs": [
+    { "id": "items", "label": "Items", "type": "array" }
+  ],
+  "outputs": [
+    { "id": "files", "label": "Files", "type": "array" },
+    { "id": "text", "label": "Text", "type": "array" },
+    { "id": "rows", "label": "Rows", "type": "array" }
+  ],
+  "config": [
+    {
+      "id": "file_type",
+      "label": "File Type",
+      "type": "select",
+      "options": ["image", "video", "audio", "any"],
+      "default": "image"
+    },
+    {
+      "id": "files",
+      "label": "Files",
+      "type": "file-list",
+      "default": []
+    }
+  ],
+  "executor": { "type": "js", "script": "execute.js" }
+}

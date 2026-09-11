@@ -1,0 +1,20 @@
+{
+  "id": "sort",
+  "name": "Sort",
+  "version": "1.0.0",
+  "category": "data",
+  "description": "Sắp xếp items: theo 1 hoặc nhiều field (multi-level), xáo trộn ngẫu nhiên, hoặc comparator JS tuỳ ý (mode code, chạy trong vm sandbox 5s timeout giống node Code).",
+  "icon": "arrow-up-down",
+  "inputs": [
+    { "id": "items", "label": "Items", "type": "array" }
+  ],
+  "outputs": [
+    { "id": "items", "label": "Items", "type": "array" }
+  ],
+  "config": [
+    { "id": "type", "label": "Type", "type": "select", "options": ["simple", "random", "code"], "default": "simple" },
+    { "id": "sortFields", "label": "Sort Fields (JSON: [{field,order}], order=asc|desc)", "type": "json", "default": [] },
+    { "id": "code", "label": "Comparator Code (JS: function(a,b), mode code)", "type": "textarea", "default": "return 0;" }
+  ],
+  "executor": "execute.js"
+}

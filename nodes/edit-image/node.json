@@ -1,0 +1,29 @@
+{
+  "id": "edit-image",
+  "name": "Edit Image",
+  "version": "1.0.0",
+  "category": "data",
+  "description": "Xử lý ảnh (resize/rotate/blur/crop/grayscale/đổi định dạng) trên binary attachment (item.binary[field] = {path, mimeType, fileName}, xem docs/product/node-spec/README.md), dùng sharp (npm thuần, không cần cài GraphicsMagick như n8n). Output ghi thẳng vào uploadsDir. Không hỗ trợ composite/vẽ text/multi-step chaining như n8n — ngoài phạm vi đợt này.",
+  "icon": "image",
+  "inputs": [
+    { "id": "items", "label": "Items", "type": "array" }
+  ],
+  "outputs": [
+    { "id": "items", "label": "Items", "type": "array" }
+  ],
+  "config": [
+    { "id": "operation", "label": "Operation", "type": "select", "options": ["resize", "rotate", "blur", "crop", "grayscale", "convertFormat"], "default": "resize" },
+    { "id": "sourceBinaryField", "label": "Source Binary Field", "type": "text", "default": "data" },
+    { "id": "outputBinaryField", "label": "Output Binary Field", "type": "text", "default": "data" },
+    { "id": "width", "label": "Width (resize/crop)", "type": "number", "default": 0, "min": 0 },
+    { "id": "height", "label": "Height (resize/crop)", "type": "number", "default": 0, "min": 0 },
+    { "id": "fit", "label": "Fit (resize)", "type": "select", "options": ["cover", "contain", "fill", "inside", "outside"], "default": "cover" },
+    { "id": "left", "label": "Left (crop)", "type": "number", "default": 0, "min": 0 },
+    { "id": "top", "label": "Top (crop)", "type": "number", "default": 0, "min": 0 },
+    { "id": "angle", "label": "Angle (rotate)", "type": "number", "default": 90 },
+    { "id": "sigma", "label": "Sigma (blur)", "type": "number", "default": 5, "min": 0.3 },
+    { "id": "format", "label": "Format (convertFormat)", "type": "select", "options": ["jpeg", "png", "webp"], "default": "jpeg" },
+    { "id": "quality", "label": "Quality (convertFormat)", "type": "number", "default": 80, "min": 1, "max": 100 }
+  ],
+  "executor": "execute.js"
+}

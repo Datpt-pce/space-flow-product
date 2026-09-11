@@ -1,0 +1,10 @@
+const router = require('express').Router();
+const service = require('../video/versionService').createVersionService(require('../db'), require('./video-projects'));
+function route(fn) { return (req, res) => { try { res.json(fn(req)); } catch (e) { res.status(e.status || 400).json({ error: e.message }); } }; }
+router.get('/:projectId', route(r => service.list(r.user.id, r.params.projectId)));
+router.post('/:projectId', route(r => service.create(r.user.id, r.params.projectId, r.body || {})));
+router.get('/:projectId/:versionId', route(r => service.get(r.user.id, r.params.projectId, r.params.versionId)));
+router.post('/:projectId/:versionId/review', route(r => service.review(r.user.id, r.params.projectId, r.params.versionId, r.body || {})));
+router.get('/:projectId/:versionId/compare', route(r => service.compare(r.user.id, r.params.projectId, r.params.versionId, r.query.otherId)));
+module.exports = router;
+module.exports.service = service;

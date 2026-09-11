@@ -1,0 +1,36 @@
+const assert = require('node:assert/strict');
+const { wrapCaption,validateSpeech,splitCaptionCues } = require('./video-speech');
+const { captionLayout,captionSvg } = require('./video-caption-layout');
+const presets=require('./video-caption-presets.json');
+const text = 'This is the first voice that we will keep.';
+const wrapped = wrapCaption(text,640,28);
+assert.ok(wrapped.includes('\n'));
+assert.equal(wrapped.replace(/\n/g,' '),text);
+assert.equal(wrapCaption('First line\nSecond line',1920,48),'First line\nSecond line');
+assert.ok(wrapCaption('字幕自動生成字幕自動生成字幕自動生成字幕自動生成',1080,84).includes('\n'));
+const speech = { style:{ preset:'outline',fontSize:48 },cues:[{ id:'cue',startMs:0,endMs:1000,content:'Caption',speaker:'speaker-1',action:'keep' }] };
+assert.equal(validateSpeech(speech,1000).cues[0].action,'keep');
+assert.throws(() => validateSpeech({ ...speech,cues:[...speech.cues,...speech.cues] },1000));
+assert.throws(() => validateSpeech({ ...speech,style:{ preset:'outline',fontSize:Infinity } },1000));
+const long={ ...speech.cues[0],endMs:12000,content:'Xin chào mọi người. Đây là một câu phụ đề rất dài cần được chia thành nhiều phần để người xem đọc được đầy đủ trong vùng an toàn. '.repeat(3) };
+const style={ preset:'yellow-outline',fontSize:80,fontFamily:'Times New Roman',position:'top-right',safeMarginPct:12 };
+const parts=splitCaptionCues([long],{ width:1080,height:1920,fps:30 },style);
+assert.ok(parts.length>1);
+assert.ok(parts.every(c=>c.content.split('\n').length<=2 && c.action === 'keep'));
+assert.equal(parts[0].id,long.id);
+assert.equal(parts[0].startMs,long.startMs);assert.equal(parts.at(-1).endMs,long.endMs);
+parts.slice(1).forEach((c,i)=>assert.equal(c.startMs,parts[i].endMs));
+assert.equal(parts.map(c=>c.content).join('').replace(/\s/g,''),long.content.replace(/\s/g,''));
+const smaller=splitCaptionCues(parts,{ width:720,height:1280,fps:30 },style);
+assert.equal(new Set(smaller.map(c=>c.id)).size,smaller.length);
+assert.deepEqual(validateSpeech({ style,cues:parts },12000).style,style);
+assert.throws(()=>splitCaptionCues([{ ...long,endMs:40 }],{ width:1080,height:1920,fps:30 },style),/thời lượng/);
+for(const preset of presets) for(const row of ['top','middle','bottom']) for(const column of ['left','center','right']) {
+  const text={ ...style,content:'WWWWWWWWWWWWWWWWWWWW\nTiếng Việt',preset:preset.id,position:`${row}-${column}` };
+  const layout=captionLayout(text,{ width:1080,height:1920 },line=>line.length*120);
+  assert.ok(layout.x>=129.6-1e-6 && layout.x+layout.width<=950.4+1e-6);
+  assert.ok(layout.y>=230.4-1e-6 && layout.y+layout.height<=1689.6+1e-6);
+  assert.equal(layout.fontFamily,'Times New Roman');
+}
+assert.ok(captionSvg({ ...style,content:'<script>&' },{ width:1080,height:1920 },()=>100).includes('&lt;script&gt;&amp;'));
+console.log('PASS speech captions: paragraph preservation, safe wrapping for landscape/portrait/CJK, duplicate cue and style validation');

@@ -1,0 +1,26 @@
+{
+  "id": "comfyui-tts",
+  "name": "ComfyUI TTS",
+  "version": "1.0.0",
+  "runsOn": "local",
+  "category": "ai",
+  "description": "Sinh audio TTS cho từng scene (dòng thoại) bằng ComfyUI server chạy local: submit workflow-graph JSON do user tự dán vào (đã export từ ComfyUI, API format), poll tới khi xong rồi tải file audio về uploadsDir. Resumable theo index: nếu batch fail giữa chừng, dùng \"Continue\" (context menu) để chạy tiếp từ scene chưa xong thay vì làm lại từ đầu — \"Run Workflow\" luôn xoá checkpoint cũ và chạy lại từ scene 0.",
+  "icon": "audio-lines",
+  "inputs": [
+    { "id": "items", "label": "Scenes", "type": "array", "required": true }
+  ],
+  "outputs": [
+    { "id": "items", "label": "Items", "type": "array" },
+    { "id": "error", "label": "Error", "type": "json" }
+  ],
+  "config": [
+    { "id": "comfyUrl", "label": "ComfyUI Base URL (để trống để dùng Local Services registry trong Settings, hoặc điền URL cụ thể để override riêng cho node này)", "type": "text", "default": "" },
+    { "id": "workflowJson", "label": "Workflow Graph JSON (ComfyUI API format, export từ ComfyUI UI)", "type": "textarea", "default": "{}" },
+    { "id": "textNodeId", "label": "Text Node ID (id node trong workflowJson nhận text)", "type": "text", "default": "" },
+    { "id": "textInputKey", "label": "Text Input Key (key trong inputs của node đó)", "type": "text", "default": "text" },
+    { "id": "audioOutputNodeId", "label": "Audio Output Node ID (id node trong workflowJson xuất ra audio)", "type": "text", "default": "" },
+    { "id": "pollIntervalMs", "label": "Poll Interval (ms)", "type": "number", "default": 2000, "min": 500, "step": 500 },
+    { "id": "pollTimeoutMs", "label": "Poll Timeout per scene (ms)", "type": "number", "default": 120000, "min": 5000, "step": 1000 }
+  ],
+  "executor": "execute.js"
+}

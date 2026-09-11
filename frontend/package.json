@@ -1,0 +1,52 @@
+{
+  "name": "space-flow-frontend",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.54.0",
+    "@react-sigma/core": "^5.0.6",
+    "@univerjs/core": "^0.25.1",
+    "@univerjs/design": "^0.25.1",
+    "@univerjs/docs": "^0.25.1",
+    "@univerjs/docs-ui": "^0.25.1",
+    "@univerjs/engine-formula": "^0.25.1",
+    "@univerjs/engine-render": "^0.25.1",
+    "@univerjs/sheets": "^0.25.1",
+    "@univerjs/sheets-conditional-formatting": "0.25.1",
+    "@univerjs/sheets-conditional-formatting-ui": "0.25.1",
+    "@univerjs/sheets-data-validation": "0.25.1",
+    "@univerjs/sheets-data-validation-ui": "0.25.1",
+    "@univerjs/sheets-formula": "^0.25.1",
+    "@univerjs/sheets-formula-ui": "^0.25.1",
+    "@univerjs/sheets-hyper-link": "0.25.1",
+    "@univerjs/sheets-hyper-link-ui": "0.25.1",
+    "@univerjs/sheets-numfmt": "0.25.1",
+    "@univerjs/sheets-numfmt-ui": "0.25.1",
+    "@univerjs/sheets-sort": "0.25.1",
+    "@univerjs/sheets-sort-ui": "0.25.1",
+    "@univerjs/sheets-ui": "^0.25.1",
+    "@univerjs/ui": "^0.25.1",
+    "@xyflow/react": "^12.6.4",
+    "exceljs": "^4.4.0",
+    "graphology": "^0.26.0",
+    "graphology-layout-forceatlas2": "^0.10.1",
+    "lucide-react": "^0.511.0",
+    "mediabunny": "^1.55.3",
+    "react": "^19.1.0",
+    "react-dom": "^19.1.0",
+    "sigma": "^3.0.3",
+    "zustand": "^5.0.5"
+  },
+  "devDependencies": {
+    "@tailwindcss/vite": "^4.1.10",
+    "@vitejs/plugin-react": "^4.5.2",
+    "tailwindcss": "^4.1.10",
+    "vite": "^6.3.5"
+  }
+}

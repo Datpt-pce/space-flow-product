@@ -1,0 +1,23 @@
+{
+  "config": {
+    "color_space": -1,
+    "hdr_vivid": false,
+    "mixed_track_mode_on": false,
+    "render_index_track_mode_on": false,
+    "use_float_render": false
+  },
+  "create_time": 0,
+  "id": "51C189F2-9F43-5426-BB7F-DD65BF7FB1A8",
+  "main_timeline_id": "B969889F-2C70-58A4-B9A5-44D089D473E8",
+  "timelines": [
+    {
+      "create_time": 0,
+      "id": "B969889F-2C70-58A4-B9A5-44D089D473E8",
+      "is_marked_delete": false,
+      "name": "Timeline 01",
+      "update_time": 0
+    }
+  ],
+  "update_time": 0,
+  "version": 0
+}

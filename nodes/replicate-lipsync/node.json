@@ -1,0 +1,25 @@
+{
+  "id": "replicate-lipsync",
+  "name": "Replicate Lip-Sync",
+  "version": "1.0.0",
+  "category": "ai",
+  "description": "Stage 4 — lựa chọn cloud (specs/english-teaching-video-pipeline.md §4.4, §0): gọi 1 model lip-sync đã host sẵn trên Replicate (submit prediction → poll → tải video output). Không hardcode 1 model cụ thể — Replicate có nhiều lựa chọn (sync-labs/lipsync, video-retalking...), user tự chọn trên replicate.com và điền `modelVersion` + tên input key đúng theo schema model đó (giống cách comfyui-tts không hardcode custom-node TTS). Input mỗi scene: json.imageUrl/videoUrl HOẶC binary.image/binary.video (ảnh/clip tham chiếu, tự encode base64 data-URI nếu là file local); audio lấy từ binary.audio (vd. nối thẳng output comfyui-tts/elevenlabs-tts) HOẶC json.audioUrl. Resumable theo index giống elevenlabs-tts/comfyui-tts. CHƯA test với model Replicate thật (chưa có credential/vendor quyết định — xem specs §0).",
+  "icon": "video",
+  "inputs": [
+    { "id": "items", "label": "Scenes", "type": "array", "required": true }
+  ],
+  "outputs": [
+    { "id": "items", "label": "Items", "type": "array" },
+    { "id": "error", "label": "Error", "type": "json" }
+  ],
+  "config": [
+    { "id": "credentialName", "label": "Credential Name (type=bearer)", "type": "credential", "default": "replicate" },
+    { "id": "modelVersion", "label": "Model Version (vd. owner/model:abcdef123...)", "type": "text", "default": "" },
+    { "id": "inputVisualKey", "label": "Input key cho ảnh/video tham chiếu (theo schema model đã chọn)", "type": "text", "default": "face" },
+    { "id": "inputAudioKey", "label": "Input key cho audio (theo schema model đã chọn)", "type": "text", "default": "audio" },
+    { "id": "extraInputJson", "label": "Extra Input Fields (JSON, merge thêm vào input theo schema model)", "type": "json", "default": {} },
+    { "id": "pollIntervalMs", "label": "Poll Interval (ms)", "type": "number", "default": 3000, "min": 500, "step": 500 },
+    { "id": "pollTimeoutMs", "label": "Poll Timeout per scene (ms)", "type": "number", "default": 300000, "min": 5000, "step": 1000 }
+  ],
+  "executor": "execute.js"
+}

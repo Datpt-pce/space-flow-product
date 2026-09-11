@@ -1,0 +1,14 @@
+const router = require('express').Router();
+const service = require('../video/automationService').createAutomationService(require('../db'), require('./video-projects'), require('./video-versions').service);
+const route = fn => (req, res) => { try { res.json(fn(req)); } catch (e) { res.status(e.status || 400).json({ error: e.message }); } };
+router.get('/recipes', route(r => service.listRecipes(r.user.id)));
+router.post('/recipes', route(r => service.createRecipe(r.user.id, r.body || {})));
+router.post('/variants', route(r => service.createVariant(r.user.id, r.body || {})));
+router.get('/context/:projectId', route(r => service.context(r.user.id, r.params.projectId)));
+router.post('/reset', route(r => service.reset(r.user.id, r.body || {})));
+router.post('/undo', route(r => service.undoOperation(r.user.id, r.body || {})));
+router.post('/siblings/preview', route(r => service.preview(r.user.id, r.body || {})));
+router.post('/siblings/apply', route(r => service.applySiblings(r.user.id, r.body || {})));
+router.post('/components/promote', route(r => service.promoteComponent(r.user.id, r.body || {})));
+module.exports = router;
+module.exports.service = service;

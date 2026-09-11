@@ -1,0 +1,20 @@
+{
+  "id": "capcut-handoff",
+  "name": "CapCut — Gói video đã render",
+  "version": "1.0.0",
+  "runsOn": "local",
+  "category": "output",
+  "description": "Chuẩn bị dự án CapCut từ VerifiedVideo có SHA-256. Các lớp dựng được gộp thành video; trả gói và báo cáo tương thích. Cài đặt vào CapCut qua cửa sổ Export của Video Editor.",
+  "icon": "folder-plus",
+  "inputs": [{ "id": "verified_video", "label": "Video đã xác minh", "type": "any", "semanticType": "VerifiedVideo", "required": true }],
+  "outputs": [
+    { "id": "capcut_package", "label": "Gói CapCut", "type": "any", "semanticType": "CapCutPackage" },
+    { "id": "capability_report", "label": "Báo cáo tương thích", "type": "any" }
+  ],
+  "config": [
+    { "id": "build", "label": "Phiên bản CapCut đã kiểm chứng", "type": "text", "default": "9.4.0.4015" },
+    { "id": "name", "label": "Tên dự án CapCut mới", "type": "text", "default": "Space-Flow Video" },
+    { "id": "acceptFlattening", "label": "Đồng ý gộp các lớp, phụ đề và hiệu ứng thành một video", "type": "boolean", "default": false }
+  ],
+  "executor": "execute.js"
+}

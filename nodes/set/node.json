@@ -1,0 +1,22 @@
+{
+  "id": "set",
+  "name": "Edit Fields (Set)",
+  "version": "1.0.0",
+  "category": "data",
+  "description": "Gán/ghi đè field trên mỗi item. Mode manual: danh sách assignment tĩnh (name/type/value) áp cho mọi item. Mode raw: thay cả item bằng 1 object JSON tĩnh. Không có expression engine — value là hằng số, không đọc được field khác trong cùng item.",
+  "icon": "sliders",
+  "inputs": [
+    { "id": "items", "label": "Items", "type": "array" }
+  ],
+  "outputs": [
+    { "id": "items", "label": "Items", "type": "array" }
+  ],
+  "config": [
+    { "id": "mode", "label": "Mode", "type": "select", "options": ["manual", "raw"], "default": "manual" },
+    { "id": "assignments", "label": "Assignments (JSON: [{name,type,value}])", "type": "json", "default": [] },
+    { "id": "keepOtherFields", "label": "Keep Other Fields (manual mode)", "type": "boolean", "default": true },
+    { "id": "stripFields", "label": "Strip Fields (JSON array of names)", "type": "json", "default": [] },
+    { "id": "jsonOutput", "label": "JSON Output (raw mode)", "type": "json", "default": {} }
+  ],
+  "executor": "execute.js"
+}

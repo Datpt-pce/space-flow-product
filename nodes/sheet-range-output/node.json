@@ -1,0 +1,22 @@
+{
+  "id": "sheet-range-output",
+  "name": "Sheet Range Output",
+  "version": "1.0.0",
+  "category": "data",
+  "description": "Ghi 1 danh sách item vào 1 Sheet đã lưu trong thư viện, bắt đầu từ 1 ô neo (anchor) — mỗi item thành 1 hàng (specs/space-flow-master-plan/03-spreadsheet.md Phase 5).",
+  "icon": "table-2",
+  "inputs": [
+    { "id": "items", "label": "Items", "type": "array", "required": true }
+  ],
+  "outputs": [
+    { "id": "written_count", "label": "Written Count", "type": "number" },
+    { "id": "range_a1", "label": "Range Written (A1)", "type": "text" }
+  ],
+  "config": [
+    { "id": "sheetId", "label": "Sheet ID", "type": "text", "default": "" },
+    { "id": "tabId", "label": "Tab ID", "type": "text", "default": "" },
+    { "id": "anchorA1", "label": "Ô bắt đầu (A1)", "type": "text", "default": "A1" },
+    { "id": "includeHeaderRow", "label": "Ghi hàng header", "type": "boolean", "default": true }
+  ],
+  "executor": "execute.js"
+}

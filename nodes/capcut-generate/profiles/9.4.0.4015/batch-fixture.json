@@ -1,0 +1,18 @@
+{
+  "appBuild": "9.4.0.4015",
+  "captured": "2026-09-08",
+  "source": "Own generated BCL project after native save; selected structural fields only, no identifiers or paths",
+  "fps": 30,
+  "duration": 3000000,
+  "tracks": [
+    {"type":"video", "flag":0, "attribute":0, "segments":[
+      {"render_index":0, "track_render_index":0, "source_timerange":{"start":0,"duration":2000000}, "target_timerange":{"start":0,"duration":2000000}, "volume":1}
+    ]},
+    {"type":"video", "flag":2, "attribute":0, "segments":[
+      {"render_index":1, "track_render_index":1, "source_timerange":{"start":0,"duration":3000000}, "target_timerange":{"start":0,"duration":3000000}, "volume":1}
+    ]},
+    {"type":"audio", "flag":0, "attribute":0, "segments":[
+      {"render_index":0, "track_render_index":2, "source_timerange":{"start":0,"duration":2000000}, "target_timerange":{"start":0,"duration":2000000}, "volume":1, "clip":null}
+    ]}
+  ]
+}

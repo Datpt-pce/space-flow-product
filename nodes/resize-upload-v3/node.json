@@ -1,0 +1,29 @@
+{
+  "id": "resize-upload-v3",
+  "name": "Resize & Upload V3",
+  "version": "1.0.0",
+  "runsOn": "local",
+  "category": "output",
+  "description": "App → nền tảng; Theme → ngôn ngữ → video. Label chuẩn, cảnh báo thiếu 5 video và bản test Desktop.",
+  "icon": "clapperboard",
+  "inputs": [{ "id": "folders_in", "label": "Theme folders", "type": "array", "required": false }],
+  "outputs": [
+    { "id": "unc_links", "label": "Folder links", "type": "array" },
+    { "id": "files_out", "label": "Videos", "type": "array" },
+    { "id": "thumbnail_files", "label": "Thumbnails", "type": "array" }
+  ],
+  "config": [
+    { "id": "rows", "label": "Danh sách Job", "type": "json", "default": [] },
+    { "id": "test_mode", "label": "Test — lưu trên Desktop", "type": "boolean", "default": true },
+    { "id": "test_output_folder", "label": "Folder test (trống = Desktop)", "type": "text", "default": "" },
+    { "id": "output_folder", "label": "Output Folder", "type": "text", "default": "" },
+    { "id": "bg_style", "label": "Kiểu nền", "type": "select", "options": ["color", "blur", "scale_fill", "none"], "default": "color" },
+    { "id": "color_color", "label": "Màu nền", "type": "text", "default": "#FEFBE7" },
+    { "id": "blur_value", "label": "Độ mờ", "type": "number", "default": 30 },
+    { "id": "use_asana", "label": "Dùng Asana khi chạy thật", "type": "boolean", "default": true },
+    { "id": "asana_credential_name", "label": "Asana PAT", "type": "credential", "default": "" },
+    { "id": "asana_field_gid", "label": "Progress GID", "type": "text", "default": "" },
+    { "id": "asana_option_gid", "label": "Done Option GID", "type": "text", "default": "" }
+  ],
+  "executor": { "type": "python", "script": "executor.py" }
+}

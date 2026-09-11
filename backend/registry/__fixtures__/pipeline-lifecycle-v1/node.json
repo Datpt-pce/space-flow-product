@@ -1,0 +1,18 @@
+{
+  "schemaVersion": 2,
+  "packageId": "pipeline-lifecycle-test",
+  "version": "1.0.0",
+  "displayName": "Pipeline Lifecycle Test",
+  "category": "data",
+  "description": "Test fixture only — Custom Node Platform Phase 8 lifecycle controls (backend/routes/registry-admin.js deprecate/revoke/rollback, backend/registry/revocation-check.js). Declares a network capability so a revoke of this exact version is expected to block real execution until acknowledged.",
+  "icon": "package",
+  "runtime": { "type": "javascript", "entry": "execute.js" },
+  "inputs": [],
+  "outputs": [
+    { "id": "items", "label": "Items", "type": "array" }
+  ],
+  "config": [],
+  "capabilities": { "network": ["example.com"] },
+  "limits": { "timeoutSeconds": 10, "memoryMB": 128, "maxOutputMB": 16 },
+  "compatibility": { "spaceFlow": ">=1.0.0" }
+}

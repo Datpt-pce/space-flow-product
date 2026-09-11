@@ -1,0 +1,25 @@
+{
+  "id": "video-assembly",
+  "name": "Video Assembly (ffmpeg)",
+  "version": "1.0.0",
+  "category": "output",
+  "description": "Stage 5 (specs/english-teaching-video-pipeline.md §4.5): ghép các scene lại thành 1 file cuối bằng ffmpeg (binary có sẵn trên máy, không thêm dependency). Ưu tiên ghép VIDEO nếu MỌI item có binary.video (output Stage 4 lip-sync); nếu không, ghép AUDIO-only (output Stage 3a TTS) — dùng được ngay cả khi chưa có Stage 4. Trộn thêm nhạc nền (tuỳ chọn) và tự sinh phụ đề .srt (dùng ffprobe đo duration thật của từng clip để tính start/end, lấy text từ json.dialogue hoặc json.text của từng scene). KHÔNG làm transition/text-overlay/color-correction — xem §4.5 gốc nếu cần mở rộng sau (MVP, CLAUDE.md §2).",
+  "icon": "film",
+  "inputs": [
+    { "id": "items", "label": "Scenes (ordered)", "type": "array", "required": true }
+  ],
+  "outputs": [
+    { "id": "video", "label": "Final Output", "type": "file" },
+    { "id": "srt", "label": "Subtitle (.srt)", "type": "file" },
+    { "id": "error", "label": "Error", "type": "json" }
+  ],
+  "config": [
+    { "id": "outputName", "label": "Output File Name (không kèm đuôi)", "type": "text", "default": "lesson_final" },
+    { "id": "bgMusicPath", "label": "Background Music Path (tuỳ chọn, absolute path .mp3/.wav)", "type": "file", "default": "" },
+    { "id": "bgMusicVolume", "label": "Background Music Volume (0-1)", "type": "number", "default": 0.3, "min": 0, "max": 1, "step": 0.05 },
+    { "id": "generateSrt", "label": "Generate Subtitle (.srt)", "type": "boolean", "default": true },
+    { "id": "fps", "label": "Output FPS (chỉ áp dụng khi ghép video)", "type": "number", "default": 24, "min": 1, "max": 60, "step": 1 },
+    { "id": "crf", "label": "Output CRF (video, thấp hơn = nét hơn/nặng hơn)", "type": "number", "default": 20, "min": 0, "max": 51, "step": 1 }
+  ],
+  "executor": "execute.js"
+}

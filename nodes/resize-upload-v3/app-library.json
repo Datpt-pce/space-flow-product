@@ -1,0 +1,23 @@
+{
+  "ai-home": {
+    "name": "AI Home",
+    "platforms": {
+      "android": { "name": "AND - Android", "code": "HomeA1", "folder": "", "thumbnail_folder": "" },
+      "ios": { "name": "IOS - iOS", "code": "", "folder": "", "thumbnail_folder": "" },
+      "webfunnel": { "name": "Webfunnel", "code": "", "folder": "", "thumbnail_folder": "" }
+    }
+  },
+  "ai-chat": {
+    "name": "AI Chat",
+    "platforms": {
+      "android": { "name": "AND - Android", "code": "ChatA2", "folder": "", "thumbnail_folder": "" },
+      "ios": { "name": "IOS - iOS", "code": "Chat1", "folder": "", "thumbnail_folder": "" }
+    }
+  },
+  "ai-deepsearch": {
+    "name": "AI DeepSearch",
+    "platforms": {
+      "webfunnel": { "name": "Webfunnel", "code": "WAD", "folder": "", "thumbnail_folder": "" }
+    }
+  }
+}

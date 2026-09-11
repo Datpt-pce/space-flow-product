@@ -1,0 +1,17 @@
+FROM node:24.16.0-bookworm@sha256:40ad9f3064e67d6860b4bc3fe1880b2953934fd6320ada990e45fe0efa6badd7 AS build
+WORKDIR /app
+COPY frontend/package*.json frontend/
+RUN npm ci --prefix frontend
+COPY frontend/ frontend/
+COPY shared/ shared/
+RUN cd frontend && npm run build
+
+FROM nginx:1.28.0-alpine@sha256:30f1c0d78e0ad60901648be663a710bdadf19e4c10ac6782c235200619158284
+COPY frontend/nginx.conf /etc/nginx/conf.d/default.conf
+COPY --from=build /app/frontend/dist /usr/share/nginx/html
+RUN sed -i 's@/run/nginx.pid@/tmp/nginx.pid@' /etc/nginx/nginx.conf \
+    && chown -R nginx:nginx /var/cache/nginx /etc/nginx/conf.d
+USER nginx
+EXPOSE 2612
+HEALTHCHECK --interval=30s --timeout=5s CMD wget -q -O /dev/null http://127.0.0.1:2612/ || exit 1
+CMD ["nginx", "-g", "daemon off;"]

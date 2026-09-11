@@ -1,0 +1,22 @@
+{
+  "id": "compression",
+  "name": "Compression",
+  "version": "1.0.0",
+  "category": "data",
+  "description": "Nén nhiều file binary attachment thành 1 archive (zip/gzip/tar/tar.gz), hoặc giải nén 1 archive thành nhiều file. Dùng binary attachment convention: item.binary[field] = {path, mimeType, fileName} (xem docs/product/node-spec/README.md). Output ghi thẳng vào uploadsDir (permanent), không dùng scratchDir. gzip chỉ nén được 1 file/lần (giới hạn của định dạng).",
+  "icon": "file-archive",
+  "inputs": [
+    { "id": "items", "label": "Items", "type": "array" }
+  ],
+  "outputs": [
+    { "id": "items", "label": "Items", "type": "array" }
+  ],
+  "config": [
+    { "id": "operation", "label": "Operation", "type": "select", "options": ["compress", "decompress"], "default": "compress" },
+    { "id": "format", "label": "Format (compress)", "type": "select", "options": ["zip", "gzip", "tar", "targz"], "default": "zip" },
+    { "id": "sourceBinaryField", "label": "Source Binary Field", "type": "text", "default": "data" },
+    { "id": "outputBinaryField", "label": "Output Binary Field", "type": "text", "default": "data" },
+    { "id": "fileName", "label": "Output File Base Name", "type": "text", "default": "archive" }
+  ],
+  "executor": "execute.js"
+}

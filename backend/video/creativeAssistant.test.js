@@ -1,0 +1,35 @@
+const assert = require('node:assert/strict');
+const { DatabaseSync } = require('node:sqlite');
+const db = new DatabaseSync(':memory:');
+db.exec("PRAGMA foreign_keys=ON; CREATE TABLE users(id TEXT PRIMARY KEY); INSERT INTO users VALUES ('owner'), ('other')");
+require('./schema').ensureVideoSchema(db);
+require.cache[require.resolve('../db')] = { id: require.resolve('../db'), filename: require.resolve('../db'), loaded: true, exports: db };
+const automation = require('../routes/video-automation').service;
+const { fixture } = require('../../shared/creative-assistant.test');
+const { createCreativeAssistantService } = require('./creativeAssistantService');
+async function main() {
+  const { draft, assets } = fixture();
+  for (const a of Object.values(assets)) db.prepare('INSERT INTO video_assets(id,owner_id,source_path,content_hash,duration_ms,kind,status) VALUES (?,?,?,?,?,?,?)').run(a.id, 'owner', a.id, a.content_hash, a.duration_ms, a.kind, a.status);
+  const service = createCreativeAssistantService(db, automation, { hash: async (_, a) => a.content_hash });
+  const plan = service.preflight('owner', { draft }); assert(plan.canCreate);
+  assert.throws(() => service.preflight('other', { draft }), e => e.status === 404);
+  const request = { draft, inputHash: plan.inputHash, idempotencyKey: 'create-once' };
+  const first = await service.materialize('owner', request);
+  assert(first.projectId && first.versionId);
+  assert.equal((await service.materialize('owner', request)).projectId, first.projectId);
+  assert.equal(service.history('owner').length, 1); assert.equal(service.history('other').length, 0);
+  const changed = structuredClone(request); changed.draft.overlayText = 'Changed';
+  await assert.rejects(service.materialize('owner', changed), e => e.status === 409);
+  const staleFile = createCreativeAssistantService(db, automation, { hash: async () => 'different' });
+  await assert.rejects(staleFile.materialize('owner', request), /File nguồn/);
+  const count = () => db.prepare('SELECT COUNT(*) n FROM video_projects').get().n;
+  const before = count();
+  db.exec("CREATE TRIGGER reject_ca BEFORE INSERT ON video_project_snapshots BEGIN SELECT RAISE(ABORT, 'disk full'); END");
+  await assert.rejects(service.materialize('owner', { ...request, idempotencyKey: 'failure' }), /disk full/);
+  assert.equal(count(), before); db.exec('DROP TRIGGER reject_ca');
+  assert.equal(db.prepare('SELECT COUNT(*) n FROM video_automation_operations').get().n, 1);
+  const analyze = createCreativeAssistantService(db, automation, { analyze: async (_, a) => ({ sourceHash: a.content_hash, cues: draft.bindings.hook.speech.cues, model: 'test' }) });
+  assert.equal((await analyze.analyze('owner', { assetId: 'hook', contentHash: 'hook-hash', language: 'en' })).origin, 'asr:test');
+  console.log('creative-assistant service: compiler, ownership, hash, retry, rollback and speech passed');
+}
+main().catch(e => { console.error(e); process.exitCode = 1; }).finally(() => db.close());

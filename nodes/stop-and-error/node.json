@@ -1,0 +1,18 @@
+{
+  "id": "stop-and-error",
+  "name": "Stop And Error",
+  "version": "1.0.0",
+  "category": "control",
+  "description": "Chủ động dừng workflow với 1 lỗi tuỳ ý — dùng làm guard-clause/assertion. Không có output port nào (throw luôn).",
+  "icon": "octagon-x",
+  "inputs": [
+    { "id": "items", "label": "Items", "type": "array" }
+  ],
+  "outputs": [],
+  "config": [
+    { "id": "errorType", "label": "Error Type", "type": "select", "options": ["errorMessage", "errorObject"], "default": "errorMessage" },
+    { "id": "errorMessage", "label": "Error Message", "type": "text", "default": "" },
+    { "id": "errorObject", "label": "Error Object (JSON)", "type": "json", "default": {} }
+  ],
+  "executor": "execute.js"
+}

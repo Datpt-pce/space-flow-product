@@ -1,0 +1,26 @@
+{
+  "id": "crypto",
+  "name": "Crypto",
+  "version": "1.0.0",
+  "category": "data",
+  "description": "Hash/HMAC/generate random string/UUID/mã hoá-giải mã đối xứng (AES-256-GCM) trên field của mỗi item, dùng module crypto built-in của Node — không cần dependency ngoài. Không hỗ trợ RSA/asymmetric và chữ ký (Sign) như n8n — ngoài phạm vi đợt này.",
+  "icon": "lock",
+  "inputs": [
+    { "id": "items", "label": "Items", "type": "array" }
+  ],
+  "outputs": [
+    { "id": "items", "label": "Items", "type": "array" }
+  ],
+  "config": [
+    { "id": "action", "label": "Action", "type": "select", "options": ["hash", "hmac", "generate", "encrypt", "decrypt"], "default": "hash" },
+    { "id": "type", "label": "Algorithm (hash/hmac, e.g. sha256, md5)", "type": "text", "default": "sha256" },
+    { "id": "field", "label": "Source Field (dot-notation, empty = use literal Value)", "type": "text", "default": "" },
+    { "id": "value", "label": "Literal Value (used when Source Field is empty)", "type": "text", "default": "" },
+    { "id": "secret", "label": "Secret (hmac/encrypt/decrypt)", "type": "text", "default": "" },
+    { "id": "encoding", "label": "Encoding (hash/hmac output)", "type": "select", "options": ["hex", "base64"], "default": "hex" },
+    { "id": "encodingType", "label": "Generate Type", "type": "select", "options": ["alphanumeric", "hex", "base64", "uuid"], "default": "alphanumeric" },
+    { "id": "stringLength", "label": "Generate Length", "type": "number", "default": 32, "min": 1 },
+    { "id": "outputFieldName", "label": "Output Field Name", "type": "text", "default": "data" }
+  ],
+  "executor": "execute.js"
+}

@@ -1,0 +1,27 @@
+{
+  "schemaVersion": 2,
+  "packageId": "image-batch-resize",
+  "version": "1.0.0",
+  "displayName": "Image Batch Resize",
+  "category": "transform",
+  "description": "Resize/crop hàng loạt ảnh theo kích thước thủ công hoặc tỉ lệ khung hình định sẵn (Pillow).",
+  "icon": "image",
+  "runtime": { "type": "python", "entry": "executor.py" },
+  "inputs": [
+    { "id": "files_in", "label": "Files In", "type": "array" }
+  ],
+  "outputs": [
+    { "id": "files_out", "label": "Files Out", "type": "array" }
+  ],
+  "config": [
+    { "id": "output_format", "label": "Output Format", "type": "select", "options": ["png", "jpg"], "default": "png" },
+    { "id": "manual_width", "label": "Manual Width", "type": "number", "default": 0 },
+    { "id": "manual_height", "label": "Manual Height", "type": "number", "default": 0 },
+    { "id": "base_px", "label": "Base Px (ratio modes)", "type": "number", "default": 1080 }
+  ],
+  "capabilities": {
+    "filesystem": "user-approved-path"
+  },
+  "limits": { "timeoutSeconds": 120, "memoryMB": 768, "maxOutputMB": 512 },
+  "compatibility": { "spaceFlow": ">=1.0.0" }
+}
