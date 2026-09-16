@@ -1,0 +1,19 @@
+{
+  "name": "space-flow-nodes",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Shared npm dependencies for nodes/*/execute.js. Node resolves bare require() specifiers by walking up from the requiring file's own directory, so packages used by node executors must live here (an ancestor of every nodes/<id>/), not in backend/node_modules (a sibling directory, never reached).",
+  "dependencies": {
+    "adm-zip": "^0.6.0",
+    "archiver": "^8.0.0",
+    "cheerio": "^1.2.0",
+    "exceljs": "^4.4.0",
+    "luxon": "^3.7.2",
+    "node-html-markdown": "^2.0.0",
+    "pdf-parse": "^2.4.5",
+    "sharp": "^0.35.3",
+    "showdown": "^2.1.0",
+    "tar": "^7.5.22",
+    "xml2js": "^0.6.2"
+  }
+}

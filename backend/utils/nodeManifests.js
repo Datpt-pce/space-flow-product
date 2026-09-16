@@ -1,0 +1,1 @@
+var s=Object.defineProperty;var t=(e,n)=>s(e,"name",{value:n,configurable:!0});const path=require("path"),fs=require("fs"),NODES_DIR=path.join(__dirname,"..","..","nodes");function getManifest(e){const n=path.join(NODES_DIR,e,"node.json");return fs.existsSync(n)?JSON.parse(fs.readFileSync(n,"utf8")):null}t(getManifest,"getManifest"),module.exports={NODES_DIR,getManifest};

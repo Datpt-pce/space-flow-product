@@ -1,0 +1,1 @@
+var n=Object.defineProperty;var r=(e,t)=>n(e,"name",{value:t,configurable:!0});const{greet}=require("local-greeter");module.exports=r(async function(t,s){return{items:[{message:greet()}]}},"execute");

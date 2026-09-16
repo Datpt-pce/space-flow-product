@@ -1,0 +1,3 @@
+var p=Object.defineProperty;var r=(s,n)=>p(s,"name",{value:n,configurable:!0});const vm=require("vm"),{toItems,fromItems}=require("../../backend/utils/items");module.exports=r(async function(n,u,i){const m=u.code||"",c=i?.log||(()=>{}),o=n.input,a={input:Array.isArray(o)?fromItems(o):o,config:u,log:c,console:{log:r((...e)=>c(e.map(String).join(" ")),"log")}};vm.createContext(a);let t;try{t=vm.runInContext(`(function(){
+${m}
+})()`,a,{timeout:5e3}),t&&typeof t.then=="function"&&(t=await t)}catch(e){throw new Error(`Code node error: ${e.message}`)}return{output:Array.isArray(t)?toItems(t):t}},"execute");

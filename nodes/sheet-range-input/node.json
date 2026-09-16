@@ -1,0 +1,20 @@
+{
+  "id": "sheet-range-input",
+  "name": "Sheet Range Input",
+  "version": "1.0.0",
+  "category": "data",
+  "description": "Đọc 1 vùng (range) trong 1 Sheet đã lưu trong thư viện, mỗi hàng thành 1 item — dùng làm input batch cho workflow (specs/space-flow-master-plan/03-spreadsheet.md Phase 5).",
+  "icon": "table-2",
+  "inputs": [],
+  "outputs": [
+    { "id": "items", "label": "Items", "type": "array" },
+    { "id": "row_count", "label": "Row Count", "type": "number" }
+  ],
+  "config": [
+    { "id": "sheetId", "label": "Sheet ID", "type": "text", "default": "" },
+    { "id": "tabId", "label": "Tab ID", "type": "text", "default": "" },
+    { "id": "rangeA1", "label": "Range (A1)", "type": "text", "default": "A1:D10" },
+    { "id": "hasHeaderRow", "label": "Hàng đầu là header", "type": "boolean", "default": true }
+  ],
+  "executor": "execute.js"
+}

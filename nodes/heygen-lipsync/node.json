@@ -1,0 +1,24 @@
+{
+  "id": "heygen-lipsync",
+  "name": "HeyGen Lip-Sync",
+  "version": "1.0.0",
+  "category": "ai",
+  "description": "Stage 4 — lựa chọn cloud thứ 2 (specs/english-teaching-video-pipeline.md §4.4, §0), dùng khi máy không tải nổi lip-sync local (comfyui-lipsync/Wav2Lip). Gọi HeyGen API: upload ảnh tham chiếu inline base64 + upload audio scene (multipart) → POST /v3/videos (type=image, audio_asset_id) → poll /v3/videos/{id} → tải video_url. Input mỗi scene: json.imageUrl HOẶC binary.image HOẶC config.referenceImagePath (ảnh dùng chung cho scene không tự mang ảnh riêng — vd. output script-parse-ollama/script-parse-llm không có field ảnh); json.audioUrl HOẶC binary.audio (audio, vd. nối thẳng output comfyui-tts/elevenlabs-tts). Resumable theo index giống replicate-lipsync/elevenlabs-tts. CHƯA test với credential HeyGen thật — verify bằng mock fetch (xem docs/product/nodes/heygen-lipsync.md).",
+  "icon": "video",
+  "inputs": [
+    { "id": "items", "label": "Scenes", "type": "array", "required": true }
+  ],
+  "outputs": [
+    { "id": "items", "label": "Items", "type": "array" },
+    { "id": "error", "label": "Error", "type": "json" }
+  ],
+  "config": [
+    { "id": "credentialName", "label": "Credential Name (type=header, name=\"x-api-key\")", "type": "credential", "default": "heygen" },
+    { "id": "referenceImagePath", "label": "Reference Image Path (dùng chung cho mọi scene nếu scene không tự mang ảnh riêng)", "type": "file", "default": "" },
+    { "id": "resolution", "label": "Resolution", "type": "select", "options": ["720p", "1080p"], "default": "1080p" },
+    { "id": "aspectRatio", "label": "Aspect Ratio", "type": "text", "default": "auto" },
+    { "id": "pollIntervalMs", "label": "Poll Interval (ms)", "type": "number", "default": 3000, "min": 500, "step": 500 },
+    { "id": "pollTimeoutMs", "label": "Poll Timeout per scene (ms)", "type": "number", "default": 300000, "min": 5000, "step": 1000 }
+  ],
+  "executor": "execute.js"
+}

@@ -1,0 +1,1 @@
+var t=Object.defineProperty;var s=(e,n)=>t(e,"name",{value:n,configurable:!0});const{greet}=require("local-evil-dep");module.exports=s(async function(n,o){return{items:[{json:{message:greet()}}]}},"execute");

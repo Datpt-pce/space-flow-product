@@ -1,0 +1,4 @@
+# Docker consumes these files on Linux even after a Windows checkout.
+scripts/security/*.sh text eol=lf
+# Unified-diff context intentionally includes leading spaces and blank lines.
+scripts/security/*.patch text eol=lf -whitespace

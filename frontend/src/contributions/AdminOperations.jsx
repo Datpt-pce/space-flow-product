@@ -1,0 +1,33 @@
+import { useState } from 'react';
+import { adminApi, useAdminData, AdminHeading, AdminMessage, AdminEmpty, AdminDialog, dateLabel } from './AdminShared.jsx';
+const stateLabels = { queued: 'Đang chờ', running: 'Đang chạy', succeeded: 'Thành công', failed: 'Thất bại', unknown: 'Cần kiểm tra kết quả', cancelled: 'Đã hủy' };
+const signals = { ok: 'Bình thường', unknown: 'Chưa xác minh', stale: 'Quá hạn', low: 'Sắp hết dung lượng', unavailable: 'Không khả dụng' };
+const alertText = {
+  'backup-freshness': ['Chưa có bản sao lưu được xác minh gần đây', 'Kiểm tra lịch sao lưu và thử khôi phục vào môi trường riêng trước khi thay đổi lớn.'],
+  'disk-pressure': ['Dung lượng đĩa cần kiểm tra', 'Kiểm tra dung lượng trống; chỉ dọn file đã xác nhận không còn sử dụng.'],
+  'db-unavailable': ['Không đọc được cơ sở dữ liệu', 'Kiểm tra ổ đĩa và tiến trình giữ khóa dữ liệu.'],
+  'queue-age': ['Có lượt chạy chờ hơn một phút', 'Xem danh sách agent và các lượt chạy đang chờ bên dưới.'],
+  'provider-circuit': ['Dịch vụ bên ngoài tạm ngưng nhận yêu cầu', 'Kiểm tra hạn mức và trạng thái nhà cung cấp trước khi thử lại.'],
+  'unknown-outcome': ['Có lượt chạy chưa rõ kết quả', 'Kiểm tra đầu ra trước khi chạy lại để tránh tạo kết quả trùng.'],
+};
+export default function AdminOperations() {
+  const [filter, setFilter] = useState(''); const [cancel, setCancel] = useState(null); const [busy, setBusy] = useState(false); const [failure, setFailure] = useState(''); const [notice, setNotice] = useState('');
+  const { data, error, loading, refresh } = useAdminData(async () => {
+    const [metrics, agents, runs, version] = await Promise.all([adminApi('/operations/metrics'), adminApi('/agents'), adminApi(`/admin-console/runs${filter ? `?state=${filter}` : ''}`), adminApi('/system/version')]);
+    return { metrics, agents, runs, version, at: Date.now() };
+  }, [filter], 15000);
+  const submit = async () => { setBusy(true); setFailure(''); try { await adminApi(`/admin-console/runs/${cancel.id}/cancel`, 'POST', {}); setCancel(null); setNotice('Đã gửi yêu cầu dừng. Lượt đang chạy cần thời gian kết thúc an toàn.'); await refresh(); } catch (err) { setFailure(err.message); } finally { setBusy(false); } };
+  const m = data?.metrics;
+  return <section className="admin-page"><AdminHeading title="Vận hành hệ thống" description="Theo dõi sức khỏe, lượt chạy và máy agent. Tự làm mới mỗi 15 giây khi trang đang mở." loading={loading} refresh={refresh} />
+    <AdminMessage error={error} notice={notice} /><div className="review-stats">{[['Cơ sở dữ liệu', m?.dependencies.database], ['Ổ đĩa', m?.dependencies.disk], ['Sao lưu', m?.dependencies.backup], ['Phiên bản', data?.version.version]].map(([label, value]) => <div key={label}><span>{label}</span><strong className="admin-signal">{signals[value] || value || '—'}</strong></div>)}</div>
+    {data && <><div className="admin-toolbar"><span>Cập nhật: {dateLabel(data.at)} · Hoạt động {Math.floor(m.uptime_seconds / 60)} phút</span><span>{m.draining ? 'Đang dừng nhận việc để tắt hệ thống' : 'Đang nhận việc'}</span></div>
+      <div className="admin-two-col"><section className="review-card"><h3>Cần chú ý ({m.alerts.length})</h3>{m.alerts.length ? m.alerts.map(alert => { const text = alertText[alert.id] || [alert.symptom, alert.action]; return <article className="admin-alert" key={alert.id}><strong>{text[0]}</strong><p>{text[1]}</p></article>; }) : <AdminEmpty>Chưa ghi nhận cảnh báo.</AdminEmpty>}</section>
+        <section className="review-card"><h3>Tải hệ thống</h3><dl className="admin-metrics"><dt>Dữ liệu database</dt><dd>{(m.databaseBytes / 1024 ** 2).toFixed(1)} MB</dd><dt>File đang quản lý</dt><dd>{(m.artifactBytes / 1024 ** 2).toFixed(1)} MB</dd><dt>Chờ lâu nhất</dt><dd>{Math.round(m.queueOldestAgeMs / 1000)} giây</dd>
+          {m.runs.map(row => <div key={row.state}><dt>{stateLabels[row.state] || row.state}</dt><dd>{row.count}</dd></div>)}</dl><details><summary>Chỉ số kỹ thuật</summary><pre>{JSON.stringify({ requests: m.requests, providers: m.provider, render: m.render }, null, 2)}</pre></details></section></div>
+      <section className="review-card admin-section"><h3>Máy agent ({data.agents.length})</h3><div className="admin-table-wrap"><table className="admin-table"><thead><tr><th>Máy</th><th>Tài khoản</th><th>Trạng thái</th><th>Lần kết nối gần nhất</th></tr></thead><tbody>{data.agents.map(agent => <tr key={agent.id}><td>{agent.name || 'Chưa đặt tên'}</td><td>{agent.ownerEmail}</td><td><span className={`admin-badge ${agent.status === 'online' ? 'is-ok' : 'is-wait'}`}>{agent.status === 'online' ? 'Đang kết nối' : 'Ngoại tuyến'}</span></td><td>{dateLabel(agent.lastSeenAt)}</td></tr>)}</tbody></table></div>{!data.agents.length && <AdminEmpty>Chưa có agent được ghép nối với môi trường này. Cài hoặc ghép agent trong Settings → Agent.</AdminEmpty>}</section>
+      <section className="review-card admin-section"><div className="review-section-heading"><h3>Lượt chạy gần đây</h3><select aria-label="Lọc lượt chạy" value={filter} onChange={event => setFilter(event.target.value)}><option value="">Mọi trạng thái</option>{Object.entries(stateLabels).map(([value, label]) => <option key={value} value={value}>{label}</option>)}</select></div><p className="review-hint">Tối đa 100 lượt gần nhất theo bộ lọc. Không hiển thị nội dung hay dữ liệu riêng của workflow.</p>
+        <div className="admin-table-wrap"><table className="admin-table"><thead><tr><th>Mã lượt chạy</th><th>Người chạy</th><th>Trạng thái</th><th>Bắt đầu</th><th>Thao tác</th></tr></thead><tbody>{data.runs.map(run => <tr key={run.id}><td><code title={run.id}>{run.id.slice(0, 12)}</code></td><td>{run.ownerName || run.ownerEmail}</td><td>{run.cancelRequested && run.state === 'running' ? 'Đã yêu cầu dừng' : stateLabels[run.state]}</td><td>{dateLabel(run.createdAt)}</td><td>{['queued', 'running'].includes(run.state) && !run.cancelRequested && <button disabled={!!error || busy} onClick={() => { setFailure(''); setCancel(run); }}>Dừng lượt chạy</button>}</td></tr>)}</tbody></table></div>{!data.runs.length && <AdminEmpty>Chưa có lượt chạy khớp bộ lọc.</AdminEmpty>}</section>
+    </>}{!data && <AdminEmpty>{loading ? 'Đang đọc trạng thái hệ thống…' : 'Không tải được dữ liệu. Hãy làm mới để thử lại.'}</AdminEmpty>}
+    {cancel && <AdminDialog title="Dừng lượt chạy" close={() => setCancel(null)} submit={submit} busy={busy} action="Xác nhận dừng"><p>Lượt {cancel.id} của {cancel.ownerName || cancel.ownerEmail}.</p><p>Việc đang chờ sẽ bị hủy. Việc đang chạy được yêu cầu dừng; kết quả đã tạo trước đó có thể vẫn còn.</p><AdminMessage error={failure} /></AdminDialog>}
+  </section>;
+}

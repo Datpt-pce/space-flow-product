@@ -1,0 +1,22 @@
+[
+  {"id":"plain","name":"Trắng","color":"#ffffff"},
+  {"id":"outline","name":"Trắng viền đen","color":"#ffffff","stroke":"#000000"},
+  {"id":"black-white","name":"Đen viền trắng","color":"#111111","stroke":"#ffffff"},
+  {"id":"white-gray","name":"Trắng viền xám","color":"#ffffff","stroke":"#555555"},
+  {"id":"yellow-outline","name":"Vàng viền đen","color":"#ffff00","stroke":"#000000"},
+  {"id":"red-white","name":"Đỏ viền trắng","color":"#ff304f","stroke":"#ffffff"},
+  {"id":"orange-white","name":"Cam viền trắng","color":"#ff8a00","stroke":"#ffffff"},
+  {"id":"blue-white","name":"Xanh dương viền trắng","color":"#368fff","stroke":"#ffffff"},
+  {"id":"green-black","name":"Xanh lá viền đen","color":"#00ff40","stroke":"#000000"},
+  {"id":"black","name":"Đen","color":"#111111"},
+  {"id":"white-gray-box","name":"Trắng nền xám","color":"#ffffff","background":"#777777","alpha":1},
+  {"id":"yellow-box","name":"Đen nền vàng","color":"#111111","background":"#fff000","alpha":1},
+  {"id":"purple-box","name":"Trắng nền tím","color":"#ffffff","background":"#8500ff","alpha":1},
+  {"id":"purple-white","name":"Tím viền trắng","color":"#8500ff","stroke":"#ffffff"},
+  {"id":"white-box","name":"Đen nền trắng","color":"#111111","background":"#ffffff","alpha":1},
+  {"id":"black-box","name":"Trắng nền đen","color":"#ffffff","background":"#111111","alpha":1},
+  {"id":"green-box","name":"Xanh lá nền đen","color":"#00ff40","background":"#111111","alpha":1},
+  {"id":"orange-yellow","name":"Cam viền vàng","color":"#ff6600","stroke":"#ffff00"},
+  {"id":"pink-white","name":"Hồng viền trắng","color":"#ff2377","stroke":"#ffffff"},
+  {"id":"box","name":"Trắng nền đen mờ","color":"#ffffff","background":"#000000","alpha":0.5}
+]

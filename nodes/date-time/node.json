@@ -1,0 +1,29 @@
+{
+  "id": "date-time",
+  "name": "Date & Time",
+  "version": "1.0.0",
+  "category": "data",
+  "description": "Cộng/trừ thời gian, format, làm tròn, trích xuất phần ngày, tính khoảng cách 2 mốc thời gian, hoặc lấy ngày hiện tại — dùng Luxon.",
+  "icon": "calendar-clock",
+  "inputs": [
+    { "id": "items", "label": "Items", "type": "array" }
+  ],
+  "outputs": [
+    { "id": "items", "label": "Items", "type": "array" }
+  ],
+  "config": [
+    { "id": "operation", "label": "Operation", "type": "select", "options": ["addToDate", "subtractFromDate", "extractDate", "formatDate", "getCurrentDate", "getTimeBetweenDates", "roundDate"], "default": "getCurrentDate" },
+    { "id": "dateField", "label": "Date Field (dot-notation, empty = now)", "type": "text", "default": "" },
+    { "id": "endDateField", "label": "End Date Field (getTimeBetweenDates)", "type": "text", "default": "" },
+    { "id": "outputFieldName", "label": "Output Field Name", "type": "text", "default": "result" },
+    { "id": "magnitude", "label": "Magnitude (add/subtract)", "type": "number", "default": 1 },
+    { "id": "timeUnit", "label": "Time Unit (add/subtract)", "type": "select", "options": ["years", "months", "weeks", "days", "hours", "minutes", "seconds"], "default": "days" },
+    { "id": "format", "label": "Format (Luxon token string, empty = ISO)", "type": "text", "default": "" },
+    { "id": "part", "label": "Part (extractDate)", "type": "select", "options": ["year", "month", "day", "hour", "minute", "second", "weekday"], "default": "year" },
+    { "id": "units", "label": "Units (getTimeBetweenDates)", "type": "select", "options": ["years", "months", "days", "hours", "minutes", "seconds"], "default": "days" },
+    { "id": "toNearest", "label": "To Nearest (roundDate)", "type": "select", "options": ["year", "month", "week", "day", "hour", "minute"], "default": "day" },
+    { "id": "roundMode", "label": "Round Mode (roundDate)", "type": "select", "options": ["roundDown", "roundUp"], "default": "roundDown" },
+    { "id": "timezone", "label": "Timezone (IANA, optional)", "type": "text", "default": "" }
+  ],
+  "executor": "execute.js"
+}

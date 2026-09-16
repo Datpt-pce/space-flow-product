@@ -1,0 +1,110 @@
+/*! Animate.css 4.1.1 - adapted UI subset
+The MIT License (MIT)
+
+Copyright (c) 2020 Daniel Eden
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
+*/
+/* Adapted from Animate.css 4.1.1 fadeIn, fadeInUp, fadeInRight and zoomIn.
+ * MIT license: /licenses/animate-css-4.1.1.txt; source: ./motion-README.md.
+ * Short travel and individual transform properties preserve positioned overlays.
+ */
+@keyframes sf-fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes sf-rise-in {
+  from { opacity: 0; translate: 0 8px; }
+  to { opacity: 1; translate: 0 0; }
+}
+
+@keyframes sf-slide-in {
+  from { opacity: 0; translate: 12px 0; }
+  to { opacity: 1; translate: 0 0; }
+}
+
+@keyframes sf-pop-in {
+  from { opacity: 0; scale: .985; }
+  to { opacity: 1; scale: 1; }
+}
+
+:root {
+  --sf-motion-fast: 140ms;
+  --sf-motion-enter: 220ms;
+  --sf-motion-ease: cubic-bezier(.2, .8, .2, 1);
+}
+
+.sf-toolbar button:focus-visible {
+  outline: 2px solid var(--accent, #7c3aed);
+  outline-offset: 2px;
+}
+
+/* Opt-in only: never transition React Flow node/viewport transforms. */
+@media (prefers-reduced-motion: no-preference) {
+  .sf-motion-backdrop {
+    animation: sf-fade-in var(--sf-motion-fast) ease-out;
+  }
+
+  /* The palette already centers with translate(-50%, -50%): fade only so its
+   * search target stays exactly centered throughout the entrance. */
+  .sf-motion-popover {
+    animation: sf-fade-in var(--sf-motion-fast) ease-out;
+  }
+
+  .sf-motion-dialog {
+    animation: sf-pop-in var(--sf-motion-enter) var(--sf-motion-ease);
+  }
+
+  .sf-motion-menu {
+    animation: sf-rise-in var(--sf-motion-fast) var(--sf-motion-ease);
+  }
+
+  .sf-motion-panel {
+    animation: sf-slide-in var(--sf-motion-enter) var(--sf-motion-ease);
+  }
+
+  .sf-motion-log {
+    animation: sf-rise-in var(--sf-motion-enter) var(--sf-motion-ease);
+  }
+
+  .sf-toolbar button {
+    transition-property: color, background-color, box-shadow, opacity, scale;
+    transition-duration: var(--sf-motion-fast);
+    transition-timing-function: var(--sf-motion-ease);
+  }
+
+  .sf-toolbar button:active:not(:disabled) {
+    scale: .94;
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) and (hover: hover) {
+  .sf-toolbar button:hover:not(:active):not(:disabled) {
+    scale: 1.06;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sf-toolbar button {
+    transition: none;
+    animation: none;
+  }
+}

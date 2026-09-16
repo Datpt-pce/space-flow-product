@@ -1,0 +1,7 @@
+{
+  "packageVersion": "1.3.2-r7",
+  "librarySha256": "789dae240e8ee25482de767c98ddbd70a7ac1a1cbefa53319a26f2b04735f061",
+  "sourceSha256": "bb329a0a2cd0274d05519d61c667c062e06990d72e125ee2dfa8de64f0119d16",
+  "upstreamProposal": "https://github.com/madler/zlib/pull/1317",
+  "upstreamProposalCommit": "0525e07f6f2c23f9b0e2e04387f847b4c7006a3f"
+}

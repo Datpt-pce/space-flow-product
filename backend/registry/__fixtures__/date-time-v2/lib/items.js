@@ -1,0 +1,1 @@
+var e=Object.defineProperty;var o=(t,n)=>e(t,"name",{value:n,configurable:!0});function toItems(t){return(t||[]).map(n=>({json:n}))}o(toItems,"toItems");function fromItems(t){return(t||[]).map(n=>n.json)}o(fromItems,"fromItems"),module.exports={toItems,fromItems};

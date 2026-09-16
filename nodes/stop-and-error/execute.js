@@ -1,0 +1,1 @@
+var c=Object.defineProperty;var n=(s,t)=>c(s,"name",{value:t,configurable:!0});module.exports=n(async function(t,r){const p=r.errorType||"errorMessage";let o;if(p==="errorObject"){const e=r.errorObject||{};o=e.message||e.description||e.error||JSON.stringify(e)}else o=r.errorMessage||"Stopped by Stop And Error node";throw new Error(o)},"execute");

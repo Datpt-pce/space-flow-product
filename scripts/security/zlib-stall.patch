@@ -1,0 +1,199 @@
+From 0525e07f6f2c23f9b0e2e04387f847b4c7006a3f Mon Sep 17 00:00:00 2001
+From: Ali Firas <alishmery18@gmail.com>
+Date: Wed, 16 Sep 2026 13:27:49 +0300
+Subject: [PATCH] Fix gzprintf after non-blocking write stalls
+
+---
+ gzwrite.c      | 26 +++++++++------
+ test/example.c | 90 ++++++++++++++++++++++++++++++++++++++++++++++++++
+ 2 files changed, 106 insertions(+), 10 deletions(-)
+
+diff --git a/gzwrite.c b/gzwrite.c
+index b5026e5fad..24c515f548 100644
+--- a/gzwrite.c
++++ b/gzwrite.c
+@@ -374,25 +374,30 @@ int ZEXPORT gzputs(gzFile file, const char *s) {
+ #if (((!defined(STDC) && !defined(Z_HAVE_STDARG_H)) || !defined(NO_vsnprintf)) && \
+      (defined(STDC) || defined(Z_HAVE_STDARG_H) || !defined(NO_snprintf))) || \
+     defined(ZLIB_INSECURE)
+-/* If the second half of the input buffer is occupied, write out the contents.
+-   If there is any input remaining due to a non-blocking stall on write, move
+-   it to the start of the buffer. Return true if this did not open up the
+-   second half of the buffer.  state->err should be checked after this to
++/* If more than half of the input buffer is occupied, write out the contents.
++   If there is room for any remaining input due to a non-blocking stall on
++   write, move it to the start of the buffer. Return true if this did not open
++   up the second half of the buffer. state->err should be checked after this to
+    handle a gz_comp() error. */
+ local int gz_vacate(gz_statep state) {
+     z_streamp strm;
+ 
+     strm = &(state->strm);
+-    if (strm->next_in + strm->avail_in <= state->in + state->size)
++    if (strm->next_in == NULL || strm->avail_in == 0) {
++        strm->next_in = state->in;
+         return 0;
+-    (void)gz_comp(state, Z_NO_FLUSH);
++    }
++    if (strm->avail_in > state->size)
++        (void)gz_comp(state, Z_NO_FLUSH);
+     if (strm->avail_in == 0) {
+         strm->next_in = state->in;
+         return 0;
+     }
++    if (strm->avail_in > state->size)
++        return 1;
+     memmove(state->in, strm->next_in, strm->avail_in);
+     strm->next_in = state->in;
+-    return strm->avail_in > state->size;
++    return 0;
+ }
+ #endif
+ 
+@@ -444,13 +448,14 @@ int ZEXPORTVA gzvprintf(gzFile file, const char *format, va_list va) {
+                a Z_BUF_ERROR to let the application know that this gzprintf()
+                needs to be retried. */
+             gz_error(state, Z_BUF_ERROR, "stalled write on gzprintf");
++            return state->err;
+         }
+         if (!state->again)
+             return state->err;
+     }
+     if (strm->avail_in == 0)
+         strm->next_in = state->in;
+-    next = (char *)(state->in + (strm->next_in - state->in) + strm->avail_in);
++    next = (char *)(state->in + strm->avail_in);
+     next[state->size - 1] = 0;
+ #ifdef NO_vsnprintf
+ #  ifdef HAS_vsprintf_void
+@@ -552,13 +557,14 @@ int ZEXPORTVA gzprintf(gzFile file, const char *format, int a1, int a2, int a3,
+                a Z_BUF_ERROR to let the application know that this gzprintf()
+                needs to be retried. */
+             gz_error(state, Z_BUF_ERROR, "stalled write on gzprintf");
++            return state->err;
+         }
+         if (!state->again)
+             return state->err;
+     }
+     if (strm->avail_in == 0)
+         strm->next_in = state->in;
+-    next = (char *)(strm->next_in + strm->avail_in);
++    next = (char *)(state->in + strm->avail_in);
+     next[state->size - 1] = 0;
+ #ifdef NO_snprintf
+ #  ifdef HAS_sprintf_void
+diff --git a/test/example.c b/test/example.c
+index 9cc5f763bc..654a5442d7 100644
+--- a/test/example.c
++++ b/test/example.c
+@@ -16,6 +16,11 @@
+ #  include <string.h>
+ #  include <stdlib.h>
+ #endif
++#if defined(Z_HAVE_UNISTD_H) && !defined(_WIN32)
++#  include <errno.h>
++#  include <fcntl.h>
++#  define TEST_GZPRINTF_STALL
++#endif
+ 
+ #if defined(VMS)
+ #  define TESTFILE "foo-gz"
+@@ -164,6 +169,88 @@ static void test_gzio(const char *fname, Byte *uncompr, uLong uncomprLen) {
+ #endif
+ }
+ 
++#ifdef TEST_GZPRINTF_STALL
++/* ===========================================================================
++ * Test gzprintf() after a non-blocking gzwrite() stall.
++ */
++static void test_gzprintf_stall(void) {
++#ifdef NO_GZCOMPRESS
++    fprintf(stderr, "NO_GZCOMPRESS -- gz* functions cannot compress\n");
++#else
++    int err, flags, ret;
++    int pipefd[2];
++    unsigned have, left;
++    unsigned long seed;
++    gzFile file;
++    char fill[4096];
++    char *data;
++    const char *msg;
++
++    memset(fill, 0xa5, sizeof(fill));
++    data = (char *)malloc(262144);
++    if (data == NULL) {
++        fprintf(stderr, "out of memory\n");
++        exit(1);
++    }
++    seed = 1;
++    for (have = 0; have < 262144; have++) {
++        seed = seed * 1103515245 + 12345;
++        data[have] = (char)(seed >> 16);
++    }
++
++    if (pipe(pipefd) == -1) {
++        fprintf(stderr, "pipe error\n");
++        exit(1);
++    }
++
++    flags = fcntl(pipefd[1], F_GETFL, 0);
++    if (flags == -1 || fcntl(pipefd[1], F_SETFL, flags | O_NONBLOCK) == -1) {
++        fprintf(stderr, "fcntl error\n");
++        exit(1);
++    }
++
++    left = 1;
++    while (left) {
++        ret = (int)write(pipefd[1], fill, sizeof(fill));
++        if (ret == -1) {
++            if (errno == EAGAIN || errno == EWOULDBLOCK)
++                break;
++            fprintf(stderr, "write error while filling pipe\n");
++            exit(1);
++        }
++    }
++
++    file = gzdopen(pipefd[1], "wb");
++    if (file == NULL) {
++        fprintf(stderr, "gzdopen error\n");
++        exit(1);
++    }
++    if (gzbuffer(file, 64) != 0) {
++        fprintf(stderr, "gzbuffer error\n");
++        exit(1);
++    }
++
++    ret = gzwrite(file, data, 262144);
++    if (ret == 262144) {
++        fprintf(stderr, "gzwrite unexpectedly did not stall\n");
++        exit(1);
++    }
++    ret = gzprintf(file, "%s", "x");
++    if (ret != Z_BUF_ERROR) {
++        msg = gzerror(file, &err);
++        fprintf(stderr, "gzprintf stall err: ret=%d, err=%d, msg=%s\n",
++                ret, err, msg);
++        exit(1);
++    }
++
++    free(data);
++    (void)gzclose(file);
++    close(pipefd[0]);
++    printf("gzprintf() stall: ok\n");
++#endif
++}
++#endif
++
+ #endif /* Z_SOLO */
+ 
+ /* ===========================================================================
+@@ -530,6 +617,9 @@ int main(int argc, char *argv[]) {
+ 
+     test_gzio((argc > 1 ? argv[1] : TESTFILE),
+               uncompr, uncomprLen);
++#ifdef TEST_GZPRINTF_STALL
++    test_gzprintf_stall();
++#endif
+ #endif
+ 
+     test_deflate(compr, comprLen);

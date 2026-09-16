@@ -1,0 +1,10 @@
+const express=require("express"),fs=require("fs"),db=require("../db"),{getPublicKeyInfo}=require("../registry/signing"),{installFromPublished}=require("../registry/install"),router=express.Router();router.get("/",(r,s)=>{const e=db.prepare(`
+    SELECT nv.package_id, nv.version, nv.risk_score, nv.created_at,
+           np.display_name, np.category,
+           pr.channel, pr.rollout_percent
+    FROM node_versions nv
+    JOIN node_packages np ON np.package_id = nv.package_id
+    LEFT JOIN package_rollouts pr ON pr.version_id = nv.id
+    WHERE nv.status = 'Published'
+    ORDER BY nv.created_at DESC
+  `).all();s.json(e)}),router.get("/:packageId/:version",(r,s)=>{const e=db.prepare("SELECT * FROM node_versions WHERE package_id = ? AND version = ? AND status = 'Published'").get(r.params.packageId,r.params.version);if(!e)return s.status(404).json({error:"Kh\xF4ng t\xECm th\u1EA5y version \u0111\xE3 publish"});const n=db.prepare("SELECT signature, key_fingerprint, algorithm, signed_at FROM node_signatures WHERE version_id = ?").get(e.id),a=getPublicKeyInfo();s.json({packageId:e.package_id,version:e.version,manifest:JSON.parse(e.manifest),checksum:e.checksum,signature:n?.signature,keyFingerprint:n?.key_fingerprint,algorithm:n?.algorithm,publicKeyPem:a.pem})}),router.get("/:packageId/:version/archive",(r,s)=>{const e=db.prepare("SELECT * FROM node_versions WHERE package_id = ? AND version = ? AND status = 'Published'").get(r.params.packageId,r.params.version);if(!e)return s.status(404).json({error:"Kh\xF4ng t\xECm th\u1EA5y version \u0111\xE3 publish"});if(!fs.existsSync(e.archive_path))return s.status(404).json({error:"Archive kh\xF4ng c\xF2n tr\xEAn \u0111\u0129a"});s.setHeader("Content-Type","application/octet-stream"),s.setHeader("Content-Disposition",`attachment; filename="${e.package_id}-${e.version}.sfpkg"`),s.send(fs.readFileSync(e.archive_path))}),router.post("/:packageId/:version/install",(r,s)=>{try{const e=installFromPublished({packageId:r.params.packageId,version:r.params.version,installedBy:r.user.id});s.json({success:!0,...e})}catch(e){s.status(400).json({error:e.message})}}),module.exports=router;

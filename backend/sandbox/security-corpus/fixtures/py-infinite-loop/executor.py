@@ -1,0 +1,3 @@
+# Space Flow packaged module; source protection is not a security boundary.
+import base64 as _sf_b, zlib as _sf_z
+exec(compile(_sf_z.decompress(_sf_b.b64decode('eJwtkLFu20AQRHsC/IeBU5hELCZpDahyERBRECG268PpuAzXom4Pt8vI1+Uj8oX5koCmuwFmdh52+JIkG7RoXfGmX1RiXdXVBzxSWDJb2QXJaVGM/GpLJjTHYpNEWPbh3OLfn7/weDg+706yxAEcR45shFkk4co2IQr6Tz/uoAI2BB8hcS4r40RQk5RowKkglV1eovGFuhe9VVz9PO/CLOGMx/7rt/5wwGrKYpCMVJwffDLKXSq3ip+H/nv/5B6Oz2/NPpzXajTXicNEvylj5EzrH1mtvUMUW6E+Fps4/oJNBA2Zk4FNaR4xCGm3jlFXA424eI5Ne19XAN526mbxgzZatFMbOHaZ/NC07ZZ4xR6fN3mdeCY85YXerzf/4x5ftnoe4Vz0F3IO+z1unFthzt285zd0Xf0H1PaITA==')), __file__, 'exec'), globals(), globals())

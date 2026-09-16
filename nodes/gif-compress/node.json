@@ -1,0 +1,24 @@
+{
+  "id": "gif-compress",
+  "name": "GIF Compress",
+  "version": "1.0.0",
+  "category": "image",
+  "description": "Nén GIF/MP4 xuống dưới ngưỡng dung lượng mục tiêu bằng ffmpeg (palette-based) + gifsicle (-O3 --lossy). Tự động lặp tăng lossy → giảm scale → giảm fps tới khi đạt target hoặc hết lượt thử (tối đa 7 lần).",
+  "icon": "file-archive",
+  "inputs": [
+    { "id": "files_in", "label": "GIF/MP4 files", "type": "array", "required": true }
+  ],
+  "outputs": [
+    { "id": "files_out", "label": "Compressed GIFs", "type": "array" }
+  ],
+  "config": [
+    { "id": "mode", "label": "Mode", "type": "select", "options": ["easy", "custom"], "default": "easy" },
+    { "id": "target_max_mb", "label": "Target Max Size (MB)", "type": "number", "default": 9.5, "min": 1, "max": 15, "step": 0.1 },
+    { "id": "scale", "label": "Scale (0.3 - 1.0)", "type": "number", "default": 1.0, "min": 0.3, "max": 1.0, "step": 0.05, "visibleIf": { "field": "mode", "value": "custom" } },
+    { "id": "fps", "label": "FPS", "type": "number", "default": 24, "min": 10, "max": 50, "step": 1, "visibleIf": { "field": "mode", "value": "custom" } },
+    { "id": "lossy", "label": "Lossy (0 - 120)", "type": "number", "default": 30, "min": 0, "max": 120, "step": 1, "visibleIf": { "field": "mode", "value": "custom" } },
+    { "id": "dither", "label": "Dithering (Floyd-Steinberg)", "type": "boolean", "default": true, "visibleIf": { "field": "mode", "value": "custom" } },
+    { "id": "output_directory", "label": "Output Directory (để trống = tạo folder cạnh file gốc)", "type": "text", "default": "" }
+  ],
+  "executor": "execute.js"
+}

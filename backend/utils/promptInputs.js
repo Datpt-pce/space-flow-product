@@ -1,0 +1,1 @@
+var o=Object.defineProperty;var n=(r,t)=>o(r,"name",{value:t,configurable:!0});function toTextArray(r){return Array.isArray(r)?r:r!==void 0?[r]:[]}n(toTextArray,"toTextArray"),module.exports={toTextArray};

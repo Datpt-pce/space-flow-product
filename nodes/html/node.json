@@ -1,0 +1,23 @@
+{
+  "id": "html",
+  "name": "HTML",
+  "version": "1.0.0",
+  "category": "data",
+  "description": "Sinh HTML từ template (placeholder {{field.path}}, không phải expression engine đầy đủ), trích dữ liệu bằng CSS selector (cheerio, nguồn JSON — không hỗ trợ nguồn binary), hoặc gộp tất cả items thành 1 bảng HTML.",
+  "icon": "code-2",
+  "inputs": [
+    { "id": "items", "label": "Items", "type": "array" }
+  ],
+  "outputs": [
+    { "id": "items", "label": "Items", "type": "array" }
+  ],
+  "config": [
+    { "id": "operation", "label": "Operation", "type": "select", "options": ["extractHtmlContent", "generateHtmlTemplate", "convertToHtmlTable"], "default": "extractHtmlContent" },
+    { "id": "field", "label": "Source Field (extractHtmlContent, dot-notation, empty = whole item as string)", "type": "text", "default": "" },
+    { "id": "extractionValues", "label": "Extraction Rules (JSON: [{key,selector,returnValue,attribute,returnArray}])", "type": "json", "default": [] },
+    { "id": "htmlTemplate", "label": "HTML Template (generateHtmlTemplate, {{field.path}} placeholders)", "type": "textarea", "default": "" },
+    { "id": "destinationFieldName", "label": "Destination Field Name (generateHtmlTemplate)", "type": "text", "default": "html" },
+    { "id": "capitalizeHeaders", "label": "Capitalize Headers (convertToHtmlTable)", "type": "boolean", "default": true }
+  ],
+  "executor": "execute.js"
+}

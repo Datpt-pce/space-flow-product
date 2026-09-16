@@ -1,0 +1,24 @@
+{
+  "schemaVersion": 2,
+  "packageId": "date-time",
+  "version": "1.0.0",
+  "displayName": "Date & Time",
+  "category": "data",
+  "description": "Cộng/trừ thời gian, format, làm tròn, trích xuất phần ngày, tính khoảng cách 2 mốc thời gian, hoặc lấy ngày hiện tại — dùng Luxon.",
+  "icon": "calendar-clock",
+  "runtime": { "type": "javascript", "entry": "execute.js" },
+  "inputs": [
+    { "id": "items", "label": "Items", "type": "array" }
+  ],
+  "outputs": [
+    { "id": "items", "label": "Items", "type": "array" }
+  ],
+  "config": [
+    { "id": "operation", "label": "Operation", "type": "select", "options": ["addToDate", "subtractFromDate", "extractDate", "formatDate", "getCurrentDate", "getTimeBetweenDates", "roundDate"], "default": "getCurrentDate" },
+    { "id": "dateField", "label": "Date Field (dot-notation, empty = now)", "type": "text", "default": "" },
+    { "id": "outputFieldName", "label": "Output Field Name", "type": "text", "default": "result" }
+  ],
+  "capabilities": {},
+  "limits": { "timeoutSeconds": 10, "memoryMB": 128, "maxOutputMB": 16 },
+  "compatibility": { "spaceFlow": ">=1.0.0" }
+}

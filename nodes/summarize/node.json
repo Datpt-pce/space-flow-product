@@ -1,0 +1,20 @@
+{
+  "id": "summarize",
+  "name": "Summarize",
+  "version": "1.0.0",
+  "category": "data",
+  "description": "Group-by + tổng hợp (sum/avg/count/min/max/concatenate/countUnique) trên items, giống GROUP BY. Không group-by field nào thì tổng hợp cả mảng thành 1 nhóm.",
+  "icon": "bar-chart-2",
+  "inputs": [
+    { "id": "items", "label": "Items", "type": "array" }
+  ],
+  "outputs": [
+    { "id": "items", "label": "Items", "type": "array" }
+  ],
+  "config": [
+    { "id": "fieldsToSplitBy", "label": "Group By Fields (comma-separated, dot-notation)", "type": "text", "default": "" },
+    { "id": "fieldsToSummarize", "label": "Fields To Summarize (JSON: [{field,aggregation,outputFieldName,separator}])", "type": "json", "default": [] },
+    { "id": "outputFormat", "label": "Output Format", "type": "select", "options": ["separateItems", "singleItem"], "default": "separateItems" }
+  ],
+  "executor": "execute.js"
+}

@@ -1,0 +1,20 @@
+{
+  "id": "markdown",
+  "name": "Markdown",
+  "version": "1.0.0",
+  "category": "data",
+  "description": "Chuyển đổi Markdown↔HTML (showdown cho markdownToHtml, node-html-markdown cho htmlToMarkdown). Giới hạn độ dài input 200,000 ký tự để tránh ReDoS đã biết của showdown trên input lớn/độc hại.",
+  "icon": "file-text",
+  "inputs": [
+    { "id": "items", "label": "Items", "type": "array" }
+  ],
+  "outputs": [
+    { "id": "items", "label": "Items", "type": "array" }
+  ],
+  "config": [
+    { "id": "mode", "label": "Mode", "type": "select", "options": ["markdownToHtml", "htmlToMarkdown"], "default": "markdownToHtml" },
+    { "id": "field", "label": "Source Field (dot-notation, empty = whole item as string)", "type": "text", "default": "" },
+    { "id": "destinationFieldName", "label": "Destination Field Name", "type": "text", "default": "data" }
+  ],
+  "executor": "execute.js"
+}

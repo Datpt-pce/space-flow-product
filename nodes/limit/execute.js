@@ -1,0 +1,1 @@
+var o=Object.defineProperty;var i=(t,e)=>o(t,"name",{value:e,configurable:!0});const{toItems,fromItems}=require("../../backend/utils/items");module.exports=i(async function(e,s){const m=fromItems(e.items||[]),c=Math.max(1,Number(s.maxItems)||1),n=(s.keep||"firstItems")==="lastItems"?m.slice(-c):m.slice(0,c);return{items:toItems(n)}},"execute");

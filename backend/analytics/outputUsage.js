@@ -1,0 +1,1 @@
+var t=Object.defineProperty;var n=(e,r)=>t(e,"name",{value:r,configurable:!0});function recordOutputUsage(e,r,o){process.env.SF_ANALYTICS_ENABLED!=="0"&&e.prepare("INSERT OR IGNORE INTO analytics_output_usage VALUES ('render-download',?,?,?)").run(o,r,Date.now())}n(recordOutputUsage,"recordOutputUsage"),module.exports={recordOutputUsage};

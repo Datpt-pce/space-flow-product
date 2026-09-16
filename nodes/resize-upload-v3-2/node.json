@@ -1,0 +1,233 @@
+{
+  "id": "resize-upload-v3-2",
+  "name": "Resize & Upload V3.2",
+  "version": "1.0.0",
+  "runsOn": "local",
+  "category": "output",
+  "description": "Nhận diện tên linh hoạt, nhóm thoại × chữ, nối dây; Google Sheet tùy chọn.",
+  "icon": "clapperboard",
+  "inputs": [
+    {
+      "id": "folders_in",
+      "label": "Theme folders",
+      "type": "array",
+      "required": false
+    }
+  ],
+  "outputs": [
+    {
+      "id": "unc_links",
+      "label": "Folder links",
+      "type": "array"
+    },
+    {
+      "id": "files_out",
+      "label": "Videos",
+      "type": "array"
+    },
+    {
+      "id": "thumbnail_files",
+      "label": "Thumbnails",
+      "type": "array"
+    },
+    {
+      "id": "recognized_items",
+      "label": "Source metadata",
+      "type": "array"
+    },
+    {
+      "id": "drive_links",
+      "label": "Reported folder paths",
+      "type": "array"
+    }
+  ],
+  "config": [
+    { "id": "sheet_report_provider", "label": "Phương thức báo cáo", "type": "select", "options": ["google_api", "apps_script"], "default": "google_api" },
+    { "id": "sheet_manual_selection", "label": "Chọn dòng báo cáo thủ công", "type": "boolean", "default": false },
+    { "id": "sheet_label_enabled", "label": "Ưu tiên label từ Google Sheet", "type": "boolean", "default": false },
+    { "id": "sheet_label_snapshot", "label": "Dữ liệu label đã đọc", "type": "json", "default": null },
+    { "id": "sheet_label_overrides", "label": "Dòng label theo video", "type": "json", "default": {} },
+    { "id": "sheet_label_ack", "label": "Dấu vân tay label đã duyệt", "type": "text", "default": "" },
+    { "id": "sheet_selected_targets", "label": "Ô đã chọn từ bản xem trước", "type": "json", "default": [] },
+    { "id": "sheet_script_credential_name", "label": "Kết nối Apps Script", "type": "credential", "default": "" },
+    {
+      "id": "source_folders",
+      "label": "Folder nguồn",
+      "type": "json",
+      "default": []
+    },
+    {
+      "id": "naming_profiles",
+      "label": "Mẫu nhận diện",
+      "type": "json",
+      "default": [
+        {
+          "fields": "theme,app,label,language",
+          "separator": "_"
+        },
+        {
+          "fields": "theme,app,language",
+          "separator": "_"
+        }
+      ]
+    },
+    {
+      "id": "input_overrides",
+      "label": "Sửa nhận diện",
+      "type": "json",
+      "default": {}
+    },
+    {
+      "id": "normalized_groups",
+      "label": "Nhóm đã nhận diện",
+      "type": "json",
+      "default": []
+    },
+    {
+      "id": "sheet_report_enabled",
+      "label": "Tự điền Google Sheet",
+      "type": "boolean",
+      "default": false
+    },
+    {
+      "id": "sheet_google_credential_id",
+      "label": "Kết nối Google báo cáo",
+      "type": "text",
+      "default": ""
+    },
+    {
+      "id": "sheet_url",
+      "label": "Google Sheet URL",
+      "type": "text",
+      "default": ""
+    },
+    {
+      "id": "sheet_tab",
+      "label": "Tab báo cáo",
+      "type": "text",
+      "default": ""
+    },
+    {
+      "id": "sheet_search_range",
+      "label": "Vùng tìm Theme (A1)",
+      "type": "text",
+      "default": ""
+    },
+    {
+      "id": "sheet_pic_editor",
+      "label": "PIC Editor được phân công",
+      "type": "text",
+      "default": ""
+    },
+    {
+      "id": "sheet_detail_column",
+      "label": "Cột Detail (trống = tự tìm header)",
+      "type": "text",
+      "default": ""
+    },
+    {
+      "id": "sheet_pic_column",
+      "label": "Cột PIC Editor (trống = tự tìm header)",
+      "type": "text",
+      "default": ""
+    },
+    {
+      "id": "sheet_link_column",
+      "label": "Cột Link Cloud (trống = tự tìm header)",
+      "type": "text",
+      "default": ""
+    },
+    {
+      "id": "sheet_theme_aliases",
+      "label": "Tên Theme khác trên Sheet",
+      "type": "json",
+      "default": {}
+    },
+    {
+      "id": "routing_mode",
+      "label": "Mô hình",
+      "type": "select",
+      "options": [
+        "table",
+        "wiring"
+      ],
+      "default": "table"
+    },
+    {
+      "id": "rows",
+      "label": "Danh sách Job",
+      "type": "json",
+      "default": []
+    },
+    {
+      "id": "test_mode",
+      "label": "Test — lưu trên Desktop",
+      "type": "boolean",
+      "default": true
+    },
+    {
+      "id": "test_output_folder",
+      "label": "Folder test (trống = Desktop)",
+      "type": "text",
+      "default": ""
+    },
+    {
+      "id": "output_folder",
+      "label": "Output Folder",
+      "type": "text",
+      "default": ""
+    },
+    {
+      "id": "bg_style",
+      "label": "Kiểu nền",
+      "type": "select",
+      "options": [
+        "color",
+        "blur",
+        "scale_fill",
+        "none"
+      ],
+      "default": "color"
+    },
+    {
+      "id": "color_color",
+      "label": "Màu nền",
+      "type": "text",
+      "default": "#FEFBE7"
+    },
+    {
+      "id": "blur_value",
+      "label": "Độ mờ",
+      "type": "number",
+      "default": 30
+    },
+    {
+      "id": "use_asana",
+      "label": "Dùng Asana khi chạy thật",
+      "type": "boolean",
+      "default": true
+    },
+    {
+      "id": "asana_credential_name",
+      "label": "Asana PAT",
+      "type": "credential",
+      "default": ""
+    },
+    {
+      "id": "asana_field_gid",
+      "label": "Progress GID",
+      "type": "text",
+      "default": ""
+    },
+    {
+      "id": "asana_option_gid",
+      "label": "Done Option GID",
+      "type": "text",
+      "default": ""
+    }
+  ],
+  "executor": {
+    "type": "python",
+    "script": "executor.py"
+  }
+}

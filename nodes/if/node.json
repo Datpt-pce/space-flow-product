@@ -1,0 +1,21 @@
+{
+  "id": "if",
+  "name": "If",
+  "version": "1.0.0",
+  "category": "control",
+  "description": "Route mỗi item vào nhánh true/false theo điều kiện field/operator/value (and/or). Không phải expression engine — chỉ so field trong item với 1 giá trị tĩnh.",
+  "icon": "git-branch",
+  "inputs": [
+    { "id": "items", "label": "Items", "type": "array" }
+  ],
+  "outputs": [
+    { "id": "true", "label": "True", "type": "array" },
+    { "id": "false", "label": "False", "type": "array" }
+  ],
+  "config": [
+    { "id": "conditions", "label": "Conditions (JSON: [{field,operator,value}])", "type": "json", "default": [] },
+    { "id": "combinator", "label": "Combinator", "type": "select", "options": ["and", "or"], "default": "and" },
+    { "id": "ignoreCase", "label": "Ignore Case", "type": "boolean", "default": true }
+  ],
+  "executor": "execute.js"
+}

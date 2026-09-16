@@ -1,0 +1,24 @@
+{
+  "id": "convert-to-file",
+  "name": "Convert to File",
+  "version": "1.0.0",
+  "category": "data",
+  "description": "Chuyển items thành file thật: CSV/XLSX/JSON gộp tất cả items vào 1 file (trừ JSON mode=each), Text/Base64-decode 1 file/item. Output là binary attachment (item.binary[field] = {path, mimeType, fileName}, xem docs/product/node-spec/README.md), ghi thẳng vào uploadsDir (permanent). Không hỗ trợ html/ical/ods/rtf/xls-legacy như n8n — ngoài phạm vi đợt này.",
+  "icon": "file-output",
+  "inputs": [
+    { "id": "items", "label": "Items", "type": "array" }
+  ],
+  "outputs": [
+    { "id": "items", "label": "Items", "type": "array" }
+  ],
+  "config": [
+    { "id": "operation", "label": "Operation", "type": "select", "options": ["csv", "xlsx", "json", "text", "fromBase64"], "default": "csv" },
+    { "id": "sourceField", "label": "Source Field (dot-notation, empty = whole item)", "type": "text", "default": "" },
+    { "id": "mode", "label": "Mode (json only)", "type": "select", "options": ["once", "each"], "default": "once" },
+    { "id": "outputBinaryField", "label": "Output Binary Field", "type": "text", "default": "data" },
+    { "id": "fileName", "label": "Output File Base Name", "type": "text", "default": "output" },
+    { "id": "delimiter", "label": "Delimiter (csv)", "type": "text", "default": "," },
+    { "id": "header", "label": "Header Row (csv)", "type": "boolean", "default": true }
+  ],
+  "executor": "execute.js"
+}

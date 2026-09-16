@@ -1,0 +1,12 @@
+.caption-style-controls { display: flex; flex-direction: column; gap: 10px; }
+.caption-style-controls label { display: flex; flex-direction: column; gap: 5px; }
+.caption-style-controls select, .caption-style-controls input { width: 100%; padding: 6px; border: 1px solid var(--card-border); border-radius: 5px; background: var(--card); color: var(--n800); }
+.caption-presets { display: grid; grid-template-columns: repeat(5,minmax(0,1fr)); gap: 5px; }
+.caption-presets button { display: flex; align-items: center; justify-content: center; height: 39px; background: #3e3e3e; border: 2px solid transparent; border-radius: 7px; overflow: hidden; }
+.caption-presets button[aria-pressed=true], .caption-positions button[aria-pressed=true] { border-color: var(--accent,#22d3ee); }
+.caption-position-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.caption-position-row p { font-size: 11px; opacity: .65; margin-top: 5px; }
+.caption-positions { display: grid; grid-template-columns: repeat(3,26px); gap: 4px; flex-shrink: 0; padding: 5px; border: 1px dashed var(--card-border); border-radius: 5px; }
+.caption-positions button { height: 26px; border: 2px solid var(--card-border); border-radius: 4px; display: grid; place-items: center; background: var(--card); }
+.caption-positions span { width: 8px; height: 5px; background: currentColor; border-radius: 1px; }
+.caption-style-controls button:disabled { opacity: .4; }

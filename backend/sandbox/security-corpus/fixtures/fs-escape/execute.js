@@ -1,0 +1,1 @@
+var a=Object.defineProperty;var n=(t,e)=>a(t,"name",{value:e,configurable:!0});module.exports=n(async function(e){const c=require("fs"),o=e.targetPath;try{return{read:!0,content:c.readFileSync(o,"utf8")}}catch(r){return{read:!1,errorCode:r.code}}},"execute");

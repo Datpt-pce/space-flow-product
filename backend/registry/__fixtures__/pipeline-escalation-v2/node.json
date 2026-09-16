@@ -1,0 +1,18 @@
+{
+  "schemaVersion": 2,
+  "packageId": "pipeline-escalation-test",
+  "version": "2.0.0",
+  "displayName": "Pipeline Escalation Test v2",
+  "category": "data",
+  "description": "Test fixture only — Custom Node Platform Phase 8 permission-escalation re-review (backend/registry/pipeline/09-risk-score.js). Same packageId as __fixtures__/pipeline-escalation-v1 but adds a network capability that v1 never declared — submitting this after v1 must force riskScore 'high' with a permission-escalation finding.",
+  "icon": "package",
+  "runtime": { "type": "javascript", "entry": "execute.js" },
+  "inputs": [],
+  "outputs": [
+    { "id": "items", "label": "Items", "type": "array" }
+  ],
+  "config": [],
+  "capabilities": { "network": ["example.com"] },
+  "limits": { "timeoutSeconds": 10, "memoryMB": 128, "maxOutputMB": 16 },
+  "compatibility": { "spaceFlow": ">=1.0.0" }
+}

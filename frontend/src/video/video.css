@@ -1,0 +1,28 @@
+.video-workspace {
+  color-scheme: light;
+  --video-info: #1d4ed8;
+  --video-success: #15803d;
+  --video-error: #b91c1c;
+}
+
+[data-appearance="beta-dark"] .video-workspace {
+  color-scheme: dark;
+  --video-info: #93c5fd;
+  --video-success: #86efac;
+  --video-error: #fca5a5;
+}
+
+/* Small editor labels need AA contrast; retain the shared palette and use its
+   stronger accent for light-background controls rather than changing app tokens. */
+[data-appearance="beta-light"] .video-workspace {
+  --accent: var(--accent-strong, #6B46F0);
+}
+
+.video-workspace [role="dialog"] {
+  outline: none;
+}
+
+.video-workspace aside input[type="checkbox"],
+.video-workspace aside input[type="range"] {
+  accent-color: var(--accent);
+}

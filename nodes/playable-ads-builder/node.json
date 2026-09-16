@@ -1,0 +1,22 @@
+{
+  "id": "playable-ads-builder",
+  "name": "Playable Ads Builder",
+  "version": "1.1.0",
+  "runsOn": "local",
+  "category": "output",
+  "description": "Xuất playable ad HTML dưới 5 MB cho từng ad network; tự nén video khi cần, giữ nguyên file nguồn và các mốc tương tác",
+  "icon": "clapperboard",
+  "inputs": [
+    { "id": "videos_in", "label": "Videos", "type": "array", "required": false }
+  ],
+  "outputs": [
+    { "id": "files_out", "label": "Playable HTML", "type": "array" }
+  ],
+  "config": [
+    { "id": "title", "label": "Ad Title", "type": "text", "default": "" },
+    { "id": "linkDownloadAndroid", "label": "Android Store URL", "type": "text", "default": "" },
+    { "id": "linkDownloadIos", "label": "iOS Store URL", "type": "text", "default": "" },
+    { "id": "video_path", "label": "Video path (local)", "type": "text", "default": "", "hidden": true }
+  ],
+  "executor": "execute.js"
+}

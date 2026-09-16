@@ -1,0 +1,1 @@
+const express=require("express"),{runs}=require("../services/workflowRunner"),{stream}=require("./runs"),router=express.Router();router.post("/",(e,s,o)=>{try{const r=runs.submit(e.body||{},e.user,{idempotencyKey:e.headers["idempotency-key"],requestId:e.requestId,correlationId:e.correlationId});stream(e,s,r),runs.start()}catch(r){o(r)}}),module.exports=router;

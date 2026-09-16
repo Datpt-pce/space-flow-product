@@ -1,0 +1,7 @@
+{
+  "name": "npm-dep-poisoned-test",
+  "version": "1.0.0",
+  "dependencies": {
+    "local-evil-dep": "file:./local-evil-dep"
+  }
+}

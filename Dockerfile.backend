@@ -1,0 +1,95 @@
+# Patched glibc/media runtime. Build tools stay in separate stages.
+# Scanner maintenance and validation: scripts/security/README.md
+FROM golang:1.26.7-bookworm@sha256:e8c859f5632dcfde7b32d2012b4351728f6437930887c2f6a91ea242459e5514 AS scanners
+ENV CGO_ENABLED=0 GOTOOLCHAIN=local
+WORKDIR /src
+RUN curl -fsSL https://codeload.github.com/anchore/syft/tar.gz/refs/tags/v1.51.1 -o /tmp/syft.tar.gz \
+ && echo 'da8d83cdca78f2c553e08a5ecb9734016a05adb904168531f582bebfbb9bb2cf  /tmp/syft.tar.gz' | sha256sum -c - \
+ && tar -xzf /tmp/syft.tar.gz --strip-components=1
+RUN go get google.golang.org/grpc@v1.83.2 golang.org/x/crypto@v0.56.0 \
+ && go build -trimpath -ldflags="-s -w -X main.version=1.51.1-sf.1" -o /out/syft ./cmd/syft
+WORKDIR /grype
+RUN curl -fsSL https://codeload.github.com/anchore/grype/tar.gz/refs/tags/v0.118.0 -o /tmp/grype.tar.gz \
+ && echo '6963758836cd46fd019d4c5e2eb903ec26960c34814a35058ebea56971dc592c  /tmp/grype.tar.gz' | sha256sum -c - \
+ && tar -xzf /tmp/grype.tar.gz --strip-components=1
+COPY scripts/security/grype-moby-client.patch /tmp/grype-moby-client.patch
+COPY scripts/security/grype-client_test.go cmd/grype/cli/commands/sf_client_test.go
+RUN git apply /tmp/grype-moby-client.patch
+RUN go get google.golang.org/grpc@v1.83.2 golang.org/x/crypto@v0.56.0 \
+ && go test ./cmd/grype/cli/commands -run '^TestSF' \
+ && go build -trimpath -ldflags="-s -w -X main.version=0.118.0-sf.1" -o /out/grype ./cmd/grype
+
+# Temporary source backport while upstream zlib 1.3.3 is unavailable.
+FROM scanners AS zlib-build
+RUN apt-get update && apt-get install -y --no-install-recommends gcc make libc6-dev
+WORKDIR /zlib
+RUN curl -fsSL https://zlib.net/zlib-1.3.2.tar.gz -o /tmp/zlib.tar.gz \
+ && echo 'bb329a0a2cd0274d05519d61c667c062e06990d72e125ee2dfa8de64f0119d16  /tmp/zlib.tar.gz' | sha256sum -c - \
+ && tar -xzf /tmp/zlib.tar.gz --strip-components=1
+COPY scripts/security/zlib-stall.patch /tmp/zlib-stall.patch
+COPY scripts/security/build-zlib.sh /tmp/build-zlib.sh
+RUN sh /tmp/build-zlib.sh
+
+FROM node:24.21.0-bookworm@sha256:6dac556d980b7f0e5498d08f08cee0ca67798b4ad6c23964a9214920e67758d0 AS node
+FROM cgr.dev/chainguard/wolfi-base@sha256:3754b6da0e1ccdab0fe46abfdd7bbbba994b593c28149f6659fa6597f2261aeb AS base
+RUN apk update && apk upgrade --no-cache \
+ && apk add --no-cache python-3.12 py3.12-pip ffmpeg-9.0 bubblewrap curl ttf-dejavu libstdc++ libgomp blkid libass
+COPY --from=node /usr/local/bin/node /usr/local/bin/node
+COPY --from=node /usr/local/lib/node_modules /usr/local/lib/node_modules
+RUN ln -s ../lib/node_modules/npm/bin/npm-cli.js /usr/local/bin/npm \
+ && ln -s ../lib/node_modules/npm/bin/npx-cli.js /usr/local/bin/npx \
+ && ln -sf /usr/bin/python3.12 /usr/local/bin/python \
+ && addgroup -g 1000 node && adduser -D -u 1000 -G node node
+FROM base AS media-build
+RUN apk add --no-cache build-base python-3.12-dev ffmpeg-9.0-dev pkgconf nasm \
+ aom-dev dav1d-dev fontconfig-dev freetype-dev harfbuzz-dev lame-dev libogg-dev \
+ libass-dev libssh-dev libtheora-dev libvorbis-dev libwebp-dev libxml2-dev \
+ opencore-amr-dev openjpeg-dev openssl-dev opus-dev snappy-dev soxr-dev \
+ speex-dev svt-av1-dev x264-dev x265-dev zeromq-dev libsrt
+WORKDIR /src/ffmpeg
+RUN curl -fsSL https://ffmpeg.org/releases/ffmpeg-9.0.1.tar.xz -o /tmp/ffmpeg.tar.xz \
+ && echo 'cf38e0e28c7e5605942c4a77755349b0145804a397af37eb1fb4c77cb237f635  /tmp/ffmpeg.tar.xz' | sha256sum -c - \
+ && tar -xJf /tmp/ffmpeg.tar.xz --strip-components=1 \
+ && ./configure --prefix=/usr --enable-shared --disable-static --disable-doc --disable-debug --disable-ffplay \
+ --enable-gpl --enable-version3 --enable-openssl --enable-libx264 --enable-libx265 \
+ --enable-libaom --enable-libtheora --enable-libmp3lame --enable-libopencore-amrnb \
+ --enable-libdav1d --enable-libharfbuzz --enable-libopus --enable-libsnappy --enable-libsrt \
+ --enable-libssh --enable-libsvtav1 --enable-libvorbis --enable-libwebp --enable-libxml2 \
+ --enable-lzma --enable-libfontconfig --enable-libfreetype --enable-libopenjpeg \
+ --enable-libspeex --enable-libsoxr --enable-libzmq --enable-libass \
+ && make -j4 && make DESTDIR=/media install
+RUN pip3.12 wheel --no-cache-dir --no-deps --no-binary=av av==18.1.0 --wheel-dir /wheels
+WORKDIR /src/gifsicle
+RUN curl -fsSL https://www.lcdf.org/gifsicle/gifsicle-1.96.tar.gz -o /tmp/gifsicle.tar.gz \
+ && echo 'fd23d279681a6dfe3c15264e33f344045b3ba473da4d19f49e67a50994b077fb  /tmp/gifsicle.tar.gz' | sha256sum -c - \
+ && tar -xzf /tmp/gifsicle.tar.gz --strip-components=1 \
+ && ./configure --disable-gifview --disable-gifdiff && make -j2
+FROM base AS runtime
+COPY --from=zlib-build /zlib/libz.so.1.3.2 /usr/lib/libz.so.1.3.2
+COPY --from=zlib-build /zlib/examplesh /usr/local/libexec/sf-zlib-check
+COPY --from=media-build /media/usr/bin/ /usr/bin/
+COPY --from=media-build /media/usr/lib/ /usr/lib/
+COPY --from=media-build /wheels /tmp/wheels
+RUN pip3.12 install --break-system-packages --no-cache-dir /tmp/wheels/*.whl "rembg[cpu]" Pillow requests certifi google-cloud-storage yt-dlp curl_cffi "gdown==6.1.0" bandit "faster-whisper==1.2.1" numpy \
+ && rm -rf /tmp/wheels
+COPY --from=media-build /src/gifsicle/src/gifsicle /usr/local/bin/gifsicle
+COPY --from=scanners /out/syft /out/grype /usr/local/bin/
+RUN apk add --no-cache git fribidi
+RUN mkdir -p /app/state /app/logs && chown node:node /app /app/state /app/logs
+USER node
+WORKDIR /app
+COPY --chown=node:node backend/package*.json backend/
+RUN npm ci --prefix backend
+COPY --chown=node:node nodes/package*.json nodes/
+RUN npm ci --prefix nodes
+ARG CACHEBUST=1
+RUN echo "cachebust=$CACHEBUST" > /dev/null
+COPY --chown=node:node backend/ backend/
+COPY --chown=node:node nodes/ nodes/
+COPY --chown=node:node shared/ shared/
+COPY --chown=node:node VERSION.json CHANGELOG.md ./
+COPY --chown=node:node scripts/state-backup.js scripts/rotate-credentials.js scripts/retain-state.js scripts/
+WORKDIR /app/backend
+EXPOSE 4001
+HEALTHCHECK --interval=30s --timeout=5s --start-period=60s CMD curl -fsS http://127.0.0.1:4001/ready || exit 1
+CMD ["node", "server.js"]

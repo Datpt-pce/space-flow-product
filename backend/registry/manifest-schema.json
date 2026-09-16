@@ -1,0 +1,178 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://space-flow/schemas/node-manifest-v2.json",
+  "title": "Space-Flow Node Manifest v2 (DRAFT)",
+  "description": "Draft schema produced in Platform Core Phase 0.1 as input for Custom Node Platform Phase 2 (.sfpkg package format). Not yet wired to a validator — see specs/space-flow-master-plan/01-custom-node-platform.md Phase 2. Extends the v1 node.json shape (id/name/category/description/icon/inputs/outputs/config/executor, see nodes/*/node.json) with packaging, capability and resource-limit fields needed once nodes can come from an untrusted Registry instead of only the built-in nodes/ folder.",
+  "type": "object",
+  "required": [
+    "schemaVersion",
+    "packageId",
+    "version",
+    "displayName",
+    "category",
+    "runtime",
+    "inputs",
+    "outputs",
+    "config",
+    "capabilities",
+    "limits",
+    "compatibility"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "schemaVersion": {
+      "const": 2,
+      "description": "Manifest schema version. Built-in v1 node.json files have no schemaVersion field and are treated as 1."
+    },
+    "packageId": {
+      "type": "string",
+      "pattern": "^[a-z0-9][a-z0-9-]{1,63}$",
+      "description": "Globally unique registry identifier, kebab-case. Distinct from the legacy node.type string used by built-in nodes."
+    },
+    "version": {
+      "type": "string",
+      "pattern": "^\\d+\\.\\d+\\.\\d+(-[0-9A-Za-z.-]+)?(\\+[0-9A-Za-z.-]+)?$",
+      "description": "SemVer 2.0.0. Workflows pin packageId@version (see docs/decisions/0008-custom-node-sandbox-architecture.md)."
+    },
+    "displayName": { "type": "string", "minLength": 1 },
+    "description": { "type": "string" },
+    "category": { "type": "string", "minLength": 1 },
+    "icon": { "type": "string" },
+    "author": { "type": "string" },
+    "license": { "type": "string" },
+
+    "runtime": {
+      "type": "object",
+      "required": ["type", "entry"],
+      "additionalProperties": false,
+      "properties": {
+        "type": { "type": "string", "enum": ["javascript", "python"] },
+        "entry": {
+          "type": "string",
+          "description": "Executor entry file inside the package, e.g. execute.js or executor.py."
+        }
+      }
+    },
+
+    "inputs": { "type": "array", "items": { "$ref": "#/definitions/port" } },
+    "outputs": { "type": "array", "items": { "$ref": "#/definitions/port" } },
+    "config": { "type": "array", "items": { "$ref": "#/definitions/configField" } },
+
+    "capabilities": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "Declarative permission grants, enforced by the Sandbox Host context SDK — see Custom Node Platform Phase 4. Absence of a field means the capability is denied (default deny).",
+      "properties": {
+        "network": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Allowlisted domains this node is permitted to reach, e.g. [\"api.elevenlabs.io\"]. Empty/absent = no network access."
+        },
+        "filesystem": {
+          "type": "string",
+          "enum": ["none", "scratch", "user-approved-path"],
+          "default": "none",
+          "description": "\"scratch\" = context.scratchDir() only (default once any filesystem access is needed). \"user-approved-path\" requires the node to declare and the user to approve a specific path at install time."
+        },
+        "secrets": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Named credential slots this node may request via context.secret(name). Values are never exposed to node code directly — see docs/decisions/0008-custom-node-sandbox-architecture.md."
+        },
+        "process": {
+          "type": "boolean",
+          "default": false,
+          "description": "Whether the node may spawn subprocesses (e.g. ffmpeg). Default denied."
+        },
+        "gpu": {
+          "type": "boolean",
+          "default": false
+        }
+      }
+    },
+
+    "limits": {
+      "type": "object",
+      "required": ["timeoutSeconds", "memoryMB", "maxOutputMB"],
+      "additionalProperties": false,
+      "properties": {
+        "timeoutSeconds": { "type": "integer", "minimum": 1 },
+        "memoryMB": { "type": "integer", "minimum": 16 },
+        "maxOutputMB": { "type": "integer", "minimum": 1 }
+      }
+    },
+
+    "compatibility": {
+      "type": "object",
+      "required": ["spaceFlow"],
+      "additionalProperties": false,
+      "properties": {
+        "spaceFlow": {
+          "type": "string",
+          "description": "SemVer range this package version is compatible with, e.g. \">=1.0.0 <2.0.0\"."
+        }
+      }
+    },
+
+    "behavior": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "Optional declarations used by the runner for retry/log-level UX — see Custom Node Platform §2.",
+      "properties": {
+        "deterministic": { "type": "boolean" },
+        "idempotent": { "type": "boolean" },
+        "sideEffects": { "type": "boolean" },
+        "retryPolicy": { "type": "string", "enum": ["none", "manual", "auto"] }
+      }
+    }
+  },
+
+  "definitions": {
+    "port": {
+      "type": "object",
+      "required": ["id", "label", "type"],
+      "additionalProperties": false,
+      "properties": {
+        "id": { "type": "string" },
+        "label": { "type": "string" },
+        "type": { "type": "string" }
+      }
+    },
+    "configField": {
+      "type": "object",
+      "required": ["id", "label", "type"],
+      "properties": {
+        "id": { "type": "string" },
+        "label": { "type": "string" },
+        "type": {
+          "type": "string",
+          "enum": [
+            "text", "textarea", "number", "boolean", "select",
+            "file", "file-list", "folder", "credential",
+            "code", "key-value", "table", "color", "slider"
+          ]
+        },
+        "default": {},
+        "options": { "type": "array" },
+        "visibleIf": { "type": "object" },
+        "required": { "type": "boolean" },
+        "min": { "type": "number" },
+        "max": { "type": "number" },
+        "pattern": { "type": "string" },
+        "helpText": { "type": "string" },
+        "columns": {
+          "type": "array",
+          "description": "Only used by \"table\" type fields: editable-grid column definitions. A table field without this falls back to a raw JSON editor in the UI.",
+          "items": {
+            "type": "object",
+            "required": ["id", "label"],
+            "properties": {
+              "id": { "type": "string" },
+              "label": { "type": "string" }
+            }
+          }
+        }
+      }
+    }
+  }
+}
